@@ -1,0 +1,118 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>サッカーの勝ち点計算ツール（優勝・降格ライン）｜まひろつーる</title><meta name="description" content="各チームの勝ち点と残り試合数から、優勝・降格の可能性を判定する無料ツール。残りの勝敗を選んで最終の勝ち点を試算することもできます。"><link rel="canonical" href="https://mahiro13th.github.io/tools/soccer-kachiten/"><meta property="og:title" content="サッカーの勝ち点計算ツール（優勝・降格ライン）｜まひろつーる"><meta property="og:description" content="各チームの勝ち点と残り試合数から、優勝・降格の可能性を判定する無料ツール。残りの勝敗を選んで最終の勝ち点を試算することもできます。"><meta property="og:url" content="https://mahiro13th.github.io/tools/soccer-kachiten/"><meta property="og:site_name" content="まひろつーる"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta property="og:image" content="https://mahiro13th.github.io/tools/img/soccer-kachiten.jpg"><link rel="stylesheet" href="../style.css"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "サッカーの勝ち点計算ツール（優勝・降格ライン）", "description": "各チームの勝ち点と残り試合数から、優勝・降格の可能性を判定する無料ツール。残りの勝敗を選んで最終の勝ち点を試算することもできます。", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": "ja", "url": "https://mahiro13th.github.io/tools/soccer-kachiten/", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"}}</script></head><body><header class="site"><div class="wrap"><a class="logo" href="../">まひろつーる</a><nav><a href="../#tools">ツール一覧</a><a href="../about/">運営者</a></nav></div></header><main class="wrap"><p class="crumb"><a href="../">ホーム</a> ＞ サッカー観戦 ＞ サッカーの勝ち点計算（優勝・降格ライン）</p><h1>サッカーの勝ち点計算ツール（優勝・降格ライン）</h1><p class="lead">各チームの勝ち点と残り試合数を入れると、優勝や降格の可能性を判定します。応援しているチームが残りを何勝何分すれば何点になるかも試せます。</p>
+<div id="kpt-root" class="kpt"></div>
+<style>
+.kpt{--a:#1d4ed8;--bg:#fff;--line:#d5dbe5;--sub:#5b6472;--bad:#b3261e;--good:#1f7a4d;color:#1c2430 !important;background:#f5f7fb !important;border:1px solid var(--line);border-radius:12px;padding:16px;max-width:640px;margin:1.5em auto;box-sizing:border-box;line-height:1.5;font-size:15px;text-align:left}
+.kpt *{box-sizing:border-box}
+.kpt-h{font-weight:700;font-size:1.15em;margin:0 0 12px}
+.kpt-h2{font-weight:700;font-size:1em;margin:18px 0 8px;padding-top:12px;border-top:1px dashed var(--line)}
+.kpt-lb{font-size:.8em;color:var(--sub);margin:0 0 4px;font-weight:700}
+.kpt button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:8px;padding:6px 12px;min-height:36px;margin:0;line-height:1.2;box-shadow:none}
+.kpt input,.kpt select{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#1c2430;width:100%;min-width:0;min-height:36px}
+.kpt-rows{display:grid;grid-template-columns:2fr 1fr 1fr 36px;gap:6px;align-items:center}
+.kpt-rows .kpt-hd{font-size:.78em;color:var(--sub);font-weight:700}
+.kpt-rows button{padding:0}
+.kpt-set{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 0}
+.kpt-bar{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 0}
+.kpt-res{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:10px;overflow-x:auto}
+.kpt table{border-collapse:collapse;width:100%;font-size:.88em;font-variant-numeric:tabular-nums}
+.kpt th,.kpt td{border-bottom:1px solid var(--line);padding:6px 5px;text-align:right;white-space:nowrap}
+.kpt th{color:var(--sub);font-size:.88em}
+.kpt td.kpt-l,.kpt th.kpt-l{text-align:left;white-space:normal}
+.kpt-tag{display:inline-block;font-size:.8em;border-radius:6px;padding:1px 6px;margin:1px 2px 1px 0;white-space:nowrap}
+.kpt-win{background:#e6f4ec;color:var(--good)}
+.kpt-may{background:#eef2fb;color:var(--a)}
+.kpt-no{background:#f1f1f1;color:#666}
+.kpt-down{background:#fdecea;color:var(--bad)}
+.kpt-big{font-size:1.4em;font-weight:700;color:var(--a);font-variant-numeric:tabular-nums}
+.kpt-line{font-size:.9em;margin:6px 0 0}
+.kpt-note{font-size:.8em;color:var(--sub);margin:8px 0 0}
+.kpt-err{font-size:.85em;color:var(--bad);margin:6px 0 0}
+@media (max-width:420px){.kpt{padding:12px}.kpt table{font-size:.8em}}
+</style>
+<script>
+(function(){
+var root=document.getElementById('kpt-root');
+if(!root){return;}
+function blank(){return {name:'',pts:'',rem:''};}
+var rows=[blank(),blank(),blank(),blank(),blank(),blank()];
+var down='0';var sim={team:'0',w:'',d:''};
+var resEl=null;var simEl=null;
+function h(tag,attrs,kids){var e=document.createElement(tag);if(attrs){for(var a in attrs){if(a==='text'){e.textContent=attrs[a];}else if(a==='cls'){e.className=attrs[a];}else if(a.indexOf('on')===0){e.addEventListener(a.slice(2),attrs[a]);}else{e.setAttribute(a,attrs[a]);}}}if(kids){for(var j=0;j<kids.length;j++){if(kids[j]){e.appendChild(kids[j]);}}}return e;}
+function num(s){var t=String(s).replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-65248);}).replace(/[,，\s]/g,'');if(t===''){return NaN;}return Number(t);}
+function teams(){var out=[];for(var i=0;i<rows.length;i++){var p=num(rows[i].pts);if(isNaN(p)){continue;}var r=num(rows[i].rem);r=isNaN(r)?0:Math.max(0,Math.floor(r));var nm=rows[i].name.trim();out.push({i:i,name:nm===''?'チーム'+(i+1):nm,pts:p,rem:r,max:p+3*r});}
+out.sort(function(a,b){return b.pts-a.pts;});return out;}
+function judge(ts){
+var T=ts.length;var N=Math.max(0,Math.floor(num(down)));if(isNaN(N)){N=0;}if(N>=T){N=0;}
+for(var i=0;i<ts.length;i++){var t=ts[i];var othersMax=-1;var othersPts=-1;var canPass=0;var surelyAbove=0;
+for(var j=0;j<ts.length;j++){if(j===i){continue;}othersMax=Math.max(othersMax,ts[j].max);othersPts=Math.max(othersPts,ts[j].pts);if(ts[j].max>=t.pts){canPass++;}if(ts[j].pts>t.max){surelyAbove++;}}
+t.tags=[];
+if(t.pts>othersMax){t.tags.push(['kpt-win','優勝確定']);}
+else if(t.max>othersPts){t.tags.push(['kpt-may','優勝の可能性あり']);}
+else if(t.max===othersPts){t.tags.push(['kpt-may','優勝は勝ち点で並べば可能性']);}
+else{t.tags.push(['kpt-no','優勝の可能性なし']);}
+if(N>0){if(surelyAbove>=T-N){t.tags.push(['kpt-down','降格決定']);}else if(canPass<=T-N-1){t.tags.push(['kpt-win','残留確定']);}else{t.tags.push(['kpt-down','降格の可能性あり']);}}}
+return N;}
+function renderResult(){
+resEl.textContent='';var ts=teams();
+if(ts.length<2){resEl.appendChild(h('div',{cls:'kpt-note',text:'2チーム以上の勝ち点と残り試合数を入れると、優勝・降格の可能性を判定します。'}));renderSim(ts);return;}
+var N=judge(ts);
+var tb=h('tbody');
+for(var i=0;i<ts.length;i++){var t=ts[i];var tags=h('td',{cls:'kpt-l'});for(var k=0;k<t.tags.length;k++){tags.appendChild(h('span',{cls:'kpt-tag '+t.tags[k][0],text:t.tags[k][1]}));}
+tb.appendChild(h('tr',null,[h('td',{text:String(i+1)}),h('td',{cls:'kpt-l',text:t.name}),h('td',{text:String(t.pts)}),h('td',{text:String(t.rem)}),h('td',{text:String(t.max)}),tags]));}
+resEl.appendChild(h('table',null,[h('thead',null,[h('tr',null,[h('th',{text:'順'}),h('th',{cls:'kpt-l',text:'チーム'}),h('th',{text:'勝ち点'}),h('th',{text:'残り'}),h('th',{text:'最大'}),h('th',{cls:'kpt-l',text:'判定'})])]),tb]));
+if(N>0){resEl.appendChild(h('div',{cls:'kpt-note',text:'降格は下位'+N+'チームとして判定しています（入力した'+ts.length+'チームの中での順位）。'}));}
+renderSim(ts);}
+function renderSim(ts){
+simEl.textContent='';
+var sel=h('select',{'aria-label':'試すチーム',onchange:function(e){sim.team=e.target.value;renderSim(teams());}});
+var cur=null;
+for(var i=0;i<ts.length;i++){var o=h('option',{value:String(ts[i].i),text:ts[i].name});if(String(ts[i].i)===sim.team){o.selected=true;cur=ts[i];}sel.appendChild(o);}
+if(!cur){if(ts.length>0){cur=ts[0];sim.team=String(cur.i);}}
+var wi=h('input',{type:'text',inputmode:'numeric',placeholder:'勝ち',value:sim.w,'aria-label':'勝ちの数',oninput:function(e){sim.w=e.target.value;out();}});
+var di=h('input',{type:'text',inputmode:'numeric',placeholder:'引き分け',value:sim.d,'aria-label':'引き分けの数',oninput:function(e){sim.d=e.target.value;out();}});
+var box=h('div');
+simEl.appendChild(h('div',{cls:'kpt-set'},[h('div',{cls:''},[h('div',{cls:'kpt-lb',text:'チーム'}),sel]),h('div'),h('div',null,[h('div',{cls:'kpt-lb',text:'残りの勝ち'}),wi]),h('div',null,[h('div',{cls:'kpt-lb',text:'残りの引き分け'}),di])]));
+simEl.appendChild(box);
+function out(){box.textContent='';if(!cur){box.appendChild(h('div',{cls:'kpt-note',text:'上の表に勝ち点を入れると、チームを選べます。'}));return;}
+var w=num(sim.w);var d=num(sim.d);w=isNaN(w)?0:Math.floor(w);d=isNaN(d)?0:Math.floor(d);
+if(w<0){w=0;}if(d<0){d=0;}
+if(w+d>cur.rem){box.appendChild(h('div',{cls:'kpt-err',text:'勝ちと引き分けの合計が、残り試合数（'+cur.rem+'）を超えています。'}));return;}
+var fin=cur.pts+3*w+d;var l=cur.rem-w-d;
+box.appendChild(h('div',{cls:'kpt-line',text:cur.name+'：'+w+'勝'+d+'分'+l+'敗なら、最終の勝ち点は'}));
+box.appendChild(h('div',{cls:'kpt-big',text:fin+'点'}));
+var above=0;var reach=0;for(var i=0;i<ts.length;i++){if(ts[i].i===cur.i){continue;}if(ts[i].pts>fin){above++;}if(ts[i].max>fin){reach++;}}
+box.appendChild(h('div',{cls:'kpt-line',text:'この勝ち点を今の時点で上回っているチーム：'+above+'　残りに全勝すれば上回れるチーム：'+reach}));}
+out();}
+function render(){
+root.textContent='';
+root.appendChild(h('div',{cls:'kpt-h',text:'サッカーの勝ち点計算（優勝・降格ライン）'}));
+var g=h('div',{cls:'kpt-rows'},[h('div',{cls:'kpt-hd',text:'チーム名'}),h('div',{cls:'kpt-hd',text:'勝ち点'}),h('div',{cls:'kpt-hd',text:'残り試合'}),h('div')]);
+for(var i=0;i<rows.length;i++){(function(i){
+g.appendChild(h('input',{type:'text',placeholder:'チーム'+(i+1),value:rows[i].name,'aria-label':(i+1)+'行目のチーム名',oninput:function(e){rows[i].name=e.target.value;renderResult();}}));
+g.appendChild(h('input',{type:'text',inputmode:'numeric',placeholder:'例 45',value:rows[i].pts,'aria-label':(i+1)+'行目の勝ち点',oninput:function(e){rows[i].pts=e.target.value;renderResult();}}));
+g.appendChild(h('input',{type:'text',inputmode:'numeric',placeholder:'例 8',value:rows[i].rem,'aria-label':(i+1)+'行目の残り試合',oninput:function(e){rows[i].rem=e.target.value;renderResult();}}));
+g.appendChild(h('button',{type:'button',text:'×','aria-label':(i+1)+'行目を削除',onclick:function(){if(rows.length>2){rows.splice(i,1);}else{rows[i]=blank();}render();}}));})(i);}
+root.appendChild(g);
+var ds=h('input',{type:'text',inputmode:'numeric',value:down,'aria-label':'降格の枠',oninput:function(e){down=e.target.value;renderResult();}});
+root.appendChild(h('div',{cls:'kpt-bar'},[h('button',{type:'button',text:'＋ チームを追加',onclick:function(){if(rows.length<24){rows.push(blank());}render();}}),h('div',{cls:''},[h('div',{cls:'kpt-lb',text:'降格の枠（下位◯チーム・0なら判定しない）'}),ds])]));
+resEl=h('div',{cls:'kpt-res'});root.appendChild(resEl);
+root.appendChild(h('div',{cls:'kpt-h2',text:'残りの勝敗を試す'}));
+simEl=h('div');root.appendChild(simEl);
+root.appendChild(h('div',{cls:'kpt-note',text:'※勝ち3点・引き分け1点で計算しています。得失点差や直接対決などの順位の決め方と、ライバル同士の対戦（両方は勝てないこと）は考えていないので、判定は目安です。「確定」は、ほかのチームが残りに全勝しても変わらない場合だけ表示します。'}));
+renderResult();}
+render();
+})();
+</script>
+
+<h2>使い方</h2>
+<ol>
+<li>チーム名、今の勝ち点、残り試合数を入れる（優勝争い・残留争いに関わるチームだけでもよい）</li>
+<li>降格の枠（下位何チームが降格か）を入れると、残留・降格の判定も出る</li>
+<li>「残りの勝敗を試す」でチームを選び、残りの勝ちと引き分けの数を入れると、最終の勝ち点が出る</li>
+</ol>
+<h2>よくある質問</h2>
+<h3>「優勝確定」はどう判定していますか？</h3>
+<p>ほかのどのチームが残り試合に全勝しても、今の勝ち点に届かない場合だけ「優勝確定」とします。たとえば勝ち点70で、2位が勝ち点62・残り2試合なら、2位の最大は68点なので優勝確定です。</p>
+<h3>判定が実際と違うことはありますか？</h3>
+<p>あります。このツールは、得失点差や直接対決などの順位の決め方と、ライバル同士の対戦（両方は勝てないこと）を考えていません。「可能性あり」は、実際にはもう可能性がない場合も含みます。正式な順位は、リーグの公式発表で確かめてください。</p>
+<a class="more" href="https://mahiro13th.com/category/%e3%82%af%e3%83%a9%e3%83%96%e3%83%8b%e3%83%a5%e3%83%bc%e3%82%b9/">推しクラブプレス：クラブニュース →<small>計算の考え方や、くわしい例はブログで紹介しています</small></a><section class="related"><h2>ほかのツール</h2><ul><li><a href="../kickoff-jst/">キックオフ時刻 日本時間変換</a>（サッカー観戦）</li><li><a href="../bakken-tensu/">馬券の点数・金額計算</a>（競馬）</li><li><a href="../gousei-odds/">合成オッズ・トリガミ判定</a>（競馬）</li><li><a href="../keiba-shushi/">競馬の収支・回収率計算</a>（競馬）</li><li><a href="../gacha-kakuritsu/">ガチャ確率計算</a>（ゲーム）</li><li><a href="../tennis-jst/">テニスの試合時刻 日本時間変換</a>（テニス観戦）</li><li><a href="../keiba-haitou/">競馬の配当・払戻計算</a>（競馬）</li><li><a href="../jewel-chokin/">ジュエル・石の貯金計算</a>（ゲーム）</li></ul></section></main><footer class="site"><div class="wrap"><a href="../">ホーム</a><a href="../about/">運営者情報</a><a href="../privacy/">プライバシーポリシー</a><p>計算結果は目安です。実際の払戻・排出率・試合日時は、公式の情報で確かめてください。</p><p>© 2026 まひろつーる</p></div></footer></body></html>

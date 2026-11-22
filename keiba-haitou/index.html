@@ -1,0 +1,95 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>競馬の配当・払戻計算ツール（税金の目安つき）｜まひろつーる</title><meta name="description" content="100円あたりの配当と購入金額から払戻を計算する無料ツール。1年間の払戻から、一時所得として扱う場合の金額の目安も出します。"><link rel="canonical" href="https://mahiro13th.github.io/tools/keiba-haitou/"><meta property="og:title" content="競馬の配当・払戻計算ツール（税金の目安つき）｜まひろつーる"><meta property="og:description" content="100円あたりの配当と購入金額から払戻を計算する無料ツール。1年間の払戻から、一時所得として扱う場合の金額の目安も出します。"><meta property="og:url" content="https://mahiro13th.github.io/tools/keiba-haitou/"><meta property="og:site_name" content="まひろつーる"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta property="og:image" content="https://mahiro13th.github.io/tools/img/keiba-haitou.jpg"><link rel="stylesheet" href="../style.css"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "競馬の配当・払戻計算ツール（税金の目安つき）", "description": "100円あたりの配当と購入金額から払戻を計算する無料ツール。1年間の払戻から、一時所得として扱う場合の金額の目安も出します。", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": "ja", "url": "https://mahiro13th.github.io/tools/keiba-haitou/", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"}}</script></head><body><header class="site"><div class="wrap"><a class="logo" href="../">まひろつーる</a><nav><a href="../#tools">ツール一覧</a><a href="../about/">運営者</a></nav></div></header><main class="wrap"><p class="crumb"><a href="../">ホーム</a> ＞ 競馬 ＞ 競馬の配当・払戻計算</p><h1>競馬の配当・払戻計算ツール（税金の目安つき）</h1><p class="lead">100円あたりの配当と購入金額から、払戻を計算します。1年間の払戻から、一時所得として扱う場合の目安も出せます。</p>
+<div id="kht-root" class="kht"></div>
+<style>
+.kht{--a:#1f7a4d;--bg:#fff;--line:#d3dbd6;--sub:#5c6660;--bad:#b3261e;color:#1d2420 !important;background:#f5f8f6 !important;border:1px solid var(--line);border-radius:12px;padding:16px;max-width:640px;margin:1.5em auto;box-sizing:border-box;line-height:1.5;font-size:15px;text-align:left}
+.kht *{box-sizing:border-box}
+.kht-h{font-weight:700;font-size:1.15em;margin:0 0 12px}
+.kht-h2{font-weight:700;font-size:1em;margin:18px 0 8px;padding-top:12px;border-top:1px dashed var(--line)}
+.kht-sec{margin:0 0 12px}
+.kht-lb{font-size:.8em;color:var(--sub);margin:0 0 4px;font-weight:700}
+.kht button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:8px;padding:6px 12px;min-height:36px;margin:0;line-height:1.2;box-shadow:none}
+.kht input{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#1d2420;width:100%;min-width:0;min-height:36px}
+.kht-rows{display:grid;grid-template-columns:1fr 1fr 1fr 36px;gap:6px;align-items:center}
+.kht-rows .kht-hd{font-size:.78em;color:var(--sub);font-weight:700}
+.kht-rows .kht-pay{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.kht-rows button{padding:0}
+.kht-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}
+.kht-wide{grid-column:1 / -1}
+.kht-bar{margin-top:10px}
+.kht-res{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:10px}
+.kht-big{display:flex;flex-wrap:wrap;gap:8px 24px}
+.kht-big div{font-size:.8em;color:var(--sub)}
+.kht-big b{display:block;font-size:1.45em;color:var(--a);font-variant-numeric:tabular-nums;line-height:1.25}
+.kht-line{font-size:.9em;margin:6px 0 0;font-variant-numeric:tabular-nums}
+.kht-note{font-size:.8em;color:var(--sub);margin:8px 0 0}
+.kht-warn{font-size:.85em;color:#8a5a00;background:#fff7e6;border-radius:8px;padding:8px 10px;margin:8px 0 0}
+.kht-err{font-size:.85em;color:var(--bad);margin:6px 0 0}
+@media (max-width:420px){.kht{padding:12px}.kht-big b{font-size:1.2em}}
+</style>
+<script>
+(function(){
+var root=document.getElementById('kht-root');
+if(!root){return;}
+var rows=[{odds:'',amt:''},{odds:'',amt:''}];
+var tax={pay:'',cost:'',other:''};
+var payEls=[];var sumEl=null;var taxEl=null;
+function h(tag,attrs,kids){var e=document.createElement(tag);if(attrs){for(var a in attrs){if(a==='text'){e.textContent=attrs[a];}else if(a==='cls'){e.className=attrs[a];}else if(a.indexOf('on')===0){e.addEventListener(a.slice(2),attrs[a]);}else{e.setAttribute(a,attrs[a]);}}}if(kids){for(var j=0;j<kids.length;j++){if(kids[j]){e.appendChild(kids[j]);}}}return e;}
+function num(s){var t=String(s).replace(/[０-９．]/g,function(c){return c==='．'?'.':String.fromCharCode(c.charCodeAt(0)-65248);}).replace(/[,，円\s]/g,'');if(t===''){return NaN;}return Number(t);}
+function yen(v){return (v<0?'-':'')+Math.abs(Math.round(v)).toLocaleString('ja-JP')+'円';}
+function rowPay(r){var o=num(r.odds);var m=num(r.amt);if(isNaN(o)){return NaN;}if(isNaN(m)){return NaN;}if(o<0){return NaN;}if(m<0){return NaN;}return Math.floor(o*Math.floor(m/100)+1e-9);}
+function updatePays(){
+var total=0;var bet=0;var cnt=0;var bad=false;
+for(var i=0;i<rows.length;i++){var p=rowPay(rows[i]);if(payEls[i]){payEls[i].textContent=isNaN(p)?'-':yen(p);}if(!isNaN(p)){total+=p;bet+=Math.floor(num(rows[i].amt)/100)*100;cnt++;}var m=num(rows[i].amt);if(!isNaN(m)){if(m%100!==0){bad=true;}}}
+sumEl.textContent='';
+if(cnt===0){sumEl.appendChild(h('div',{cls:'kht-note',text:'100円あたりの配当（払戻金）と、その馬券の購入金額を入れると、払戻を計算します。'}));return;}
+sumEl.appendChild(h('div',{cls:'kht-big'},[h('div',null,[document.createTextNode('払戻の合計'),h('b',{text:yen(total)})]),h('div',null,[document.createTextNode('当たり馬券の購入額'),h('b',{text:yen(bet)})])]));
+if(bad){sumEl.appendChild(h('div',{cls:'kht-err',text:'馬券は100円単位です。100円未満は切り捨てて計算しました。'}));}
+sumEl.appendChild(h('div',{cls:'kht-bar'},[h('button',{type:'button',text:'この合計を下の「税金の目安」に入れる',onclick:function(){tax.pay=String(total);tax.cost=String(bet);render();}})]));}
+function updateTax(){
+taxEl.textContent='';
+var p=num(tax.pay);var c=tax.cost===''?0:num(tax.cost);var o=tax.other===''?0:num(tax.other);
+if(isNaN(p)){taxEl.appendChild(h('div',{cls:'kht-note',text:'1年間（1月〜12月）の払戻の合計と、当たり馬券の購入額の合計を入れてください。'}));return;}
+if(isNaN(c)){taxEl.appendChild(h('div',{cls:'kht-err',text:'購入額は数字で入れてください。'}));return;}
+if(isNaN(o)){taxEl.appendChild(h('div',{cls:'kht-err',text:'ほかの一時所得は数字で入れてください。'}));return;}
+var gross=p+o-c;var ichiji=Math.max(0,gross-Math.min(500000,Math.max(0,gross)));var half=Math.floor(ichiji/2);
+taxEl.appendChild(h('div',{cls:'kht-big'},[h('div',null,[document.createTextNode('一時所得の金額'),h('b',{text:yen(ichiji)})]),h('div',null,[document.createTextNode('ほかの所得と合算する額（2分の1）'),h('b',{text:yen(half)})])]));
+taxEl.appendChild(h('div',{cls:'kht-line',text:'計算：払戻 '+yen(p)+(o>0?' ＋ ほかの一時所得 '+yen(o):'')+' － 当たり馬券の購入額 '+yen(c)+' － 特別控除（最高50万円）'}));
+if(ichiji===0){taxEl.appendChild(h('div',{cls:'kht-note',text:'特別控除の50万円以内なので、一時所得の金額は0円です。'}));}
+else if(half<=200000){taxEl.appendChild(h('div',{cls:'kht-warn',text:'合算する額は20万円以下です。会社員などで、給与以外の所得の合計が20万円以下なら、所得税の確定申告がいらない場合があります（住民税の申告は別に必要です）。ほかに副業などの所得があるときは、それも合わせて考えます。'}));}
+else{taxEl.appendChild(h('div',{cls:'kht-warn',text:'合算する額が20万円を超えています。確定申告が必要になる可能性が高い金額です。'}));}}
+function render(){
+root.textContent='';payEls=[];
+root.appendChild(h('div',{cls:'kht-h',text:'競馬の配当・払戻計算'}));
+var g=h('div',{cls:'kht-rows'},[h('div',{cls:'kht-hd',text:'配当（100円あたり）'}),h('div',{cls:'kht-hd',text:'購入金額（円）'}),h('div',{cls:'kht-hd',text:'払戻'}),h('div')]);
+for(var i=0;i<rows.length;i++){(function(i){
+g.appendChild(h('input',{type:'text',inputmode:'numeric',placeholder:'例 1250',value:rows[i].odds,'aria-label':(i+1)+'行目の配当',oninput:function(e){rows[i].odds=e.target.value;updatePays();}}));
+g.appendChild(h('input',{type:'text',inputmode:'numeric',placeholder:'例 500',value:rows[i].amt,'aria-label':(i+1)+'行目の購入金額',oninput:function(e){rows[i].amt=e.target.value;updatePays();}}));
+var pe=h('div',{cls:'kht-pay',text:'-'});payEls.push(pe);g.appendChild(pe);
+g.appendChild(h('button',{type:'button',text:'×','aria-label':(i+1)+'行目を削除',onclick:function(){if(rows.length>1){rows.splice(i,1);}else{rows[0]={odds:'',amt:''};}render();}}));})(i);}
+root.appendChild(h('div',{cls:'kht-sec'},[g]));
+root.appendChild(h('div',{cls:'kht-sec'},[h('button',{type:'button',text:'＋ 当たり馬券を追加',onclick:function(){if(rows.length<20){rows.push({odds:'',amt:''});}render();}})]));
+sumEl=h('div',{cls:'kht-res'});root.appendChild(sumEl);
+root.appendChild(h('div',{cls:'kht-h2',text:'税金の目安（一時所得）'}));
+var f=function(key,label,ph){return h('div',null,[h('div',{cls:'kht-lb',text:label}),h('input',{type:'text',inputmode:'numeric',placeholder:ph,value:tax[key],'aria-label':label,oninput:function(e){tax[key]=e.target.value;updateTax();}})]);};
+root.appendChild(h('div',{cls:'kht-grid'},[f('pay','1年間の払戻の合計（円）','例 1500000'),f('cost','当たり馬券の購入額の合計（円）','例 30000'),h('div',{cls:'kht-wide'},[h('div',{cls:'kht-lb',text:'ほかの一時所得（任意・円）'}),h('input',{type:'text',inputmode:'numeric',placeholder:'懸賞金・保険の一時金など',value:tax.other,'aria-label':'ほかの一時所得',oninput:function(e){tax.other=e.target.value;updateTax();}})])]));
+taxEl=h('div',{cls:'kht-res'});root.appendChild(taxEl);
+root.appendChild(h('div',{cls:'kht-note',text:'※一般的な競馬ファンの払戻金は、原則として一時所得として計算します。この場合、外れ馬券の購入額は差し引けません。馬券の買い方や規模によっては雑所得になることもあります。ここで出すのは目安です。実際の申告は、国税庁の案内や税務署で確かめてください。'}));
+updatePays();updateTax();}
+render();
+})();
+</script>
+
+<h2>使い方</h2>
+<ol>
+<li>当たった馬券の「配当（100円あたりの払戻金）」と「購入金額」を入れる。払戻がすぐに出る</li>
+<li>当たり馬券が複数あるときは「＋ 当たり馬券を追加」で行を増やす</li>
+<li>税金の目安を見たいときは、1年間の払戻の合計と、当たり馬券の購入額の合計を入れる（上の合計をボタンで入れることもできる）</li>
+</ol>
+<h2>よくある質問</h2>
+<h3>配当1,250円の馬券を500円買うと、払戻はいくらですか？</h3>
+<p>1,250円 × 5 で6,250円です。配当は100円あたりの金額なので、購入金額を100円単位の口数に直してかけます。</p>
+<h3>競馬の払戻に税金はかかりますか？</h3>
+<p>一般的な競馬ファンの場合、払戻金は原則として「一時所得」になります。1年間の「払戻 − 当たり馬券の購入額 − 特別控除（最高50万円）」が一時所得の金額で、その2分の1をほかの所得と合算します。外れ馬券の購入額は、原則として差し引けません。</p>
+<h3>いくら当たったら申告が必要ですか？</h3>
+<p>人によって違います。たとえば会社員などで、給与以外の所得の合計（一時所得は2分の1にした後の額）が20万円以下なら、所得税の確定申告がいらない場合があります。住民税の申告は別に必要です。このツールは目安なので、実際の申告は国税庁の案内や税務署で確かめてください。</p>
+<a class="more" href="https://kuromemo.blog.jp/archives/cat_428911.html">くろめも：競馬のレース結果と払戻 →<small>計算の考え方や、くわしい例はブログで紹介しています</small></a><section class="related"><h2>ほかのツール</h2><ul><li><a href="../bakken-tensu/">馬券の点数・金額計算</a>（競馬）</li><li><a href="../gousei-odds/">合成オッズ・トリガミ判定</a>（競馬）</li><li><a href="../keiba-shushi/">競馬の収支・回収率計算</a>（競馬）</li><li><a href="../gacha-kakuritsu/">ガチャ確率計算</a>（ゲーム）</li><li><a href="../kickoff-jst/">キックオフ時刻 日本時間変換</a>（サッカー観戦）</li><li><a href="../tennis-jst/">テニスの試合時刻 日本時間変換</a>（テニス観戦）</li><li><a href="../jewel-chokin/">ジュエル・石の貯金計算</a>（ゲーム）</li><li><a href="../soccer-kachiten/">サッカーの勝ち点計算（優勝・降格ライン）</a>（サッカー観戦）</li></ul></section></main><footer class="site"><div class="wrap"><a href="../">ホーム</a><a href="../about/">運営者情報</a><a href="../privacy/">プライバシーポリシー</a><p>計算結果は目安です。実際の払戻・排出率・試合日時は、公式の情報で確かめてください。</p><p>© 2026 まひろつーる</p></div></footer></body></html>

@@ -1,0 +1,99 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ジュエル・石の貯金計算ツール｜まひろつーる</title><meta name="description" content="今の数と1日に増える数から、期限までに貯まるジュエル（石）と、ガチャを回せる回数を計算する無料ツール。目標の回数から貯まる日も逆算できます。"><link rel="canonical" href="https://mahiro13th.github.io/tools/jewel-chokin/"><meta property="og:title" content="ジュエル・石の貯金計算ツール｜まひろつーる"><meta property="og:description" content="今の数と1日に増える数から、期限までに貯まるジュエル（石）と、ガチャを回せる回数を計算する無料ツール。目標の回数から貯まる日も逆算できます。"><meta property="og:url" content="https://mahiro13th.github.io/tools/jewel-chokin/"><meta property="og:site_name" content="まひろつーる"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta property="og:image" content="https://mahiro13th.github.io/tools/img/jewel-chokin.jpg"><link rel="stylesheet" href="../style.css"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "ジュエル・石の貯金計算ツール", "description": "今の数と1日に増える数から、期限までに貯まるジュエル（石）と、ガチャを回せる回数を計算する無料ツール。目標の回数から貯まる日も逆算できます。", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": "ja", "url": "https://mahiro13th.github.io/tools/jewel-chokin/", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"}}</script></head><body><header class="site"><div class="wrap"><a class="logo" href="../">まひろつーる</a><nav><a href="../#tools">ツール一覧</a><a href="../about/">運営者</a></nav></div></header><main class="wrap"><p class="crumb"><a href="../">ホーム</a> ＞ ゲーム ＞ ジュエル・石の貯金計算</p><h1>ジュエル・石の貯金計算ツール</h1><p class="lead">今持っている数と1日に増える数から、期限の日までにジュエル（石）がいくつ貯まり、ガチャを何回回せるかを計算します。目標の回数から、あと何日で貯まるかも逆算できます。</p>
+<div id="kjw-root" class="kjw"></div>
+<style>
+.kjw{--a:#6d3fc0;--bg:#fff;--line:#dcd5ea;--sub:#5f5870;--bad:#b3261e;color:#221d2e !important;background:#f7f4fc !important;border:1px solid var(--line);border-radius:12px;padding:16px;max-width:640px;margin:1.5em auto;box-sizing:border-box;line-height:1.5;font-size:15px;text-align:left}
+.kjw *{box-sizing:border-box}
+.kjw-h{font-weight:700;font-size:1.15em;margin:0 0 12px}
+.kjw-h2{font-weight:700;font-size:1em;margin:18px 0 8px;padding-top:12px;border-top:1px dashed var(--line)}
+.kjw-lb{font-size:.8em;color:var(--sub);margin:0 0 4px;font-weight:700}
+.kjw input{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#221d2e;width:100%;min-width:0;min-height:36px}
+.kjw-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}
+.kjw-res{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:10px}
+.kjw-big{display:flex;flex-wrap:wrap;gap:8px 24px}
+.kjw-big div{font-size:.8em;color:var(--sub)}
+.kjw-big b{display:block;font-size:1.45em;color:var(--a);font-variant-numeric:tabular-nums;line-height:1.25}
+.kjw-line{font-size:.9em;margin:6px 0 0;font-variant-numeric:tabular-nums}
+.kjw-note{font-size:.8em;color:var(--sub);margin:8px 0 0}
+.kjw-err{font-size:.85em;color:var(--bad);margin:6px 0 0}
+@media (max-width:420px){.kjw{padding:12px}.kjw-big b{font-size:1.2em}}
+</style>
+<script>
+(function(){
+var root=document.getElementById('kjw-root');
+if(!root){return;}
+function pad(n){return (n<10?'0':'')+n;}
+function ymd(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+var t0=new Date();t0.setHours(0,0,0,0);
+var dl=new Date(t0.getTime());dl.setDate(dl.getDate()+30);
+var st={now:'',daily:'',until:ymd(dl),extra:'',one:'',ten:'',rate:'',goal:''};
+var resEl=null;var goalEl=null;
+var WD=['日','月','火','水','木','金','土'];
+function h(tag,attrs,kids){var e=document.createElement(tag);if(attrs){for(var a in attrs){if(a==='text'){e.textContent=attrs[a];}else if(a==='cls'){e.className=attrs[a];}else if(a.indexOf('on')===0){e.addEventListener(a.slice(2),attrs[a]);}else{e.setAttribute(a,attrs[a]);}}}if(kids){for(var j=0;j<kids.length;j++){if(kids[j]){e.appendChild(kids[j]);}}}return e;}
+function num(s){var t=String(s).replace(/[０-９．]/g,function(c){return c==='．'?'.':String.fromCharCode(c.charCodeAt(0)-65248);}).replace(/[,，%％\s]/g,'');if(t===''){return NaN;}return Number(t);}
+function n0(s){var v=num(s);return isNaN(v)?0:v;}
+function fmtN(v){return Math.floor(v).toLocaleString('ja-JP');}
+function jdate(d){return (d.getMonth()+1)+'月'+d.getDate()+'日（'+WD[d.getDay()]+'）';}
+function days(){var m=/^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(st.until);if(!m){return NaN;}var d=new Date(Number(m[1]),Number(m[2])-1,Number(m[3]));return Math.round((d.getTime()-t0.getTime())/86400000);}
+function pulls(total){var one=num(st.one);var ten=num(st.ten);if(isNaN(one)){if(isNaN(ten)){return null;}}
+var r={tens:0,singles:0,count:0};
+if(!isNaN(ten)){if(ten>0){r.tens=Math.floor(total/ten);}}
+var rest=total-r.tens*(isNaN(ten)?0:ten);
+if(!isNaN(one)){if(one>0){r.singles=Math.floor(rest/one);}}
+r.count=r.tens*10+r.singles;return r;}
+function prob(n){var p=num(st.rate);if(isNaN(p)){return null;}if(p<=0){return null;}if(p>=100){return null;}return 1-Math.pow(1-p/100,n);}
+function pct(v){return (Math.floor(v*1000)/10).toFixed(1)+'%';}
+function renderResult(){
+resEl.textContent='';
+var now=num(st.now);var daily=n0(st.daily);var extra=n0(st.extra);var d=days();
+if(isNaN(now)){resEl.appendChild(h('div',{cls:'kjw-note',text:'今持っている数と、1日に増える数を入れると、期限までに貯まる数を計算します。'}));return;}
+if(isNaN(d)){resEl.appendChild(h('div',{cls:'kjw-err',text:'期限の日付を選んでください。'}));return;}
+if(d<0){resEl.appendChild(h('div',{cls:'kjw-err',text:'期限の日付が過去になっています。'}));return;}
+var total=now+daily*d+extra;
+resEl.appendChild(h('div',{cls:'kjw-big'},[h('div',null,[document.createTextNode('期限までに貯まる数'),h('b',{text:fmtN(total)})]),h('div',null,[document.createTextNode('期限まで'),h('b',{text:d+'日'})])]));
+resEl.appendChild(h('div',{cls:'kjw-line',text:'内訳：今 '+fmtN(now)+' ＋ 1日 '+fmtN(daily)+' × '+d+'日'+(extra>0?' ＋ ほかに入る数 '+fmtN(extra):'')}));
+var p=pulls(total);
+if(p){var txt='回せる回数：'+p.count+'回';if(p.tens>0){txt+='（10連 '+p.tens+'回'+(p.singles>0?' ＋ 単発 '+p.singles+'回':'')+'）';}resEl.appendChild(h('div',{cls:'kjw-line',text:txt}));
+var pr=prob(p.count);if(pr!==null){if(p.count>0){resEl.appendChild(h('div',{cls:'kjw-line',text:'排出率'+num(st.rate)+'%なら、'+p.count+'回で1回以上出る確率は '+pct(pr)}));}}}
+else{resEl.appendChild(h('div',{cls:'kjw-note',text:'ガチャ1回（または10連）の消費を入れると、回せる回数も出します。'}));}}
+function renderGoal(){
+goalEl.textContent='';
+var g=num(st.goal);if(isNaN(g)){goalEl.appendChild(h('div',{cls:'kjw-note',text:'目標の回数を入れると、必要な数と、貯まる日を計算します。'}));return;}
+var one=num(st.one);var ten=num(st.ten);
+if(isNaN(one)){if(isNaN(ten)){goalEl.appendChild(h('div',{cls:'kjw-err',text:'上でガチャ1回か10連の消費を入れてください。'}));return;}}
+var need=0;if(!isNaN(ten)){need=Math.floor(g/10)*ten+(g%10)*(isNaN(one)?ten/10:one);}else{need=g*one;}
+need=Math.ceil(need);
+var now=n0(st.now);var daily=n0(st.daily);var extra=n0(st.extra);var short=need-now-extra;
+goalEl.appendChild(h('div',{cls:'kjw-big'},[h('div',null,[document.createTextNode(g+'回に必要な数'),h('b',{text:fmtN(need)})]),h('div',null,[document.createTextNode('あと'),h('b',{text:short>0?fmtN(short):'0（もう足りています）'})])]));
+if(short>0){if(daily>0){var dd=Math.ceil(short/daily);var day=new Date(t0.getTime());day.setDate(day.getDate()+dd);goalEl.appendChild(h('div',{cls:'kjw-line',text:'1日 '+fmtN(daily)+' ずつなら、あと'+dd+'日（'+jdate(day)+'）で貯まります。'}));}else{goalEl.appendChild(h('div',{cls:'kjw-note',text:'1日に増える数を入れると、貯まる日を計算します。'}));}}
+var pr=prob(g);if(pr!==null){goalEl.appendChild(h('div',{cls:'kjw-line',text:'排出率'+num(st.rate)+'%なら、'+g+'回で1回以上出る確率は '+pct(pr)}));}}
+function upd(){renderResult();renderGoal();}
+function field(key,label,ph,type,mode){var inp=h('input',{type:type||'text',placeholder:ph||'',value:st[key],'aria-label':label,oninput:function(e){st[key]=e.target.value;upd();}});if(mode){inp.setAttribute('inputmode',mode);}return h('div',null,[h('div',{cls:'kjw-lb',text:label}),inp]);}
+function render(){
+root.textContent='';
+root.appendChild(h('div',{cls:'kjw-h',text:'ジュエル・石の貯金計算'}));
+root.appendChild(h('div',{cls:'kjw-grid'},[field('now','今持っている数','例 3500','text','numeric'),field('daily','1日に増える数','例 150','text','numeric'),field('until','期限の日付','','date',''),field('extra','ほかに入る数（任意）','イベント報酬など','text','numeric'),field('one','ガチャ1回の消費','例 25','text','numeric'),field('ten','10連の消費（任意）','例 250','text','numeric'),field('rate','排出率%（任意）','例 1.5','text','decimal')]));
+resEl=h('div',{cls:'kjw-res'});root.appendChild(resEl);
+root.appendChild(h('div',{cls:'kjw-h2',text:'目標の回数から逆算'}));
+root.appendChild(h('div',{cls:'kjw-grid'},[field('goal','回したい回数','例 100','text','numeric')]));
+goalEl=h('div',{cls:'kjw-res'});root.appendChild(goalEl);
+root.appendChild(h('div',{cls:'kjw-note',text:'※「1日に増える数」は、ログインボーナスやデイリーミッションなど、毎日ほぼ確実に入る数を入れてください。今日の分はもう受け取った前提で、明日から期限の日までの日数で計算します。数字はゲームの画面で確かめてください。'}));
+upd();}
+render();
+})();
+</script>
+
+<h2>使い方</h2>
+<ol>
+<li>今持っている数、1日に増える数、期限の日付を入れる</li>
+<li>ガチャ1回（と10連）の消費を入れると、回せる回数が出る。排出率を入れると、その回数で1回以上出る確率も出る</li>
+<li>「目標の回数から逆算」に回したい回数を入れると、必要な数と、貯まる日が出る</li>
+</ol>
+<p>ゲーム名は問わないので、ジュエル・石・ダイヤなど、ガチャに使うものなら何でも使えます。</p>
+<h2>よくある質問</h2>
+<h3>「1日に増える数」には何を入れればいいですか？</h3>
+<p>ログインボーナスやデイリーミッションなど、毎日ほぼ確実にもらえる数の合計です。イベント報酬のように日によって違うものは「ほかに入る数」にまとめて入れてください。</p>
+<h3>今日の分は入っていますか？</h3>
+<p>今日の分はもう受け取った前提で、明日から期限の日までの日数で計算します。</p>
+<h3>出る確率はどう計算していますか？</h3>
+<p>毎回同じ確率で抽選される前提で、「1 −（1 − 排出率）の回数乗」です。天井がある場合は、<a href="../gacha-kakuritsu/">ガチャ確率計算</a>で確かめられます。</p>
+<a class="more" href="https://whitechatnoir680yen.blog.jp/">白猫ニュースノート：ゲームの最新情報 →<small>計算の考え方や、くわしい例はブログで紹介しています</small></a><section class="related"><h2>ほかのツール</h2><ul><li><a href="../gacha-kakuritsu/">ガチャ確率計算</a>（ゲーム）</li><li><a href="../bakken-tensu/">馬券の点数・金額計算</a>（競馬）</li><li><a href="../gousei-odds/">合成オッズ・トリガミ判定</a>（競馬）</li><li><a href="../keiba-shushi/">競馬の収支・回収率計算</a>（競馬）</li><li><a href="../kickoff-jst/">キックオフ時刻 日本時間変換</a>（サッカー観戦）</li><li><a href="../tennis-jst/">テニスの試合時刻 日本時間変換</a>（テニス観戦）</li><li><a href="../keiba-haitou/">競馬の配当・払戻計算</a>（競馬）</li><li><a href="../soccer-kachiten/">サッカーの勝ち点計算（優勝・降格ライン）</a>（サッカー観戦）</li></ul></section></main><footer class="site"><div class="wrap"><a href="../">ホーム</a><a href="../about/">運営者情報</a><a href="../privacy/">プライバシーポリシー</a><p>計算結果は目安です。実際の払戻・排出率・試合日時は、公式の情報で確かめてください。</p><p>© 2026 まひろつーる</p></div></footer></body></html>
