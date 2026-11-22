@@ -1,0 +1,128 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>テニスの試合時刻 日本時間変換ツール｜まひろつーる</title><meta name="description" content="全豪・全仏・ウィンブルドン・全米など、テニスの大会の現地の試合時刻を曜日付きの日本時間に変換する無料ツール。サマータイムも自動で計算し、その日の早見表も出します。"><link rel="canonical" href="https://mahiro13th.github.io/tools/tennis-jst/"><meta property="og:title" content="テニスの試合時刻 日本時間変換ツール｜まひろつーる"><meta property="og:description" content="全豪・全仏・ウィンブルドン・全米など、テニスの大会の現地の試合時刻を曜日付きの日本時間に変換する無料ツール。サマータイムも自動で計算し、その日の早見表も出します。"><meta property="og:url" content="https://mahiro13th.github.io/tools/tennis-jst/"><meta property="og:site_name" content="まひろつーる"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta property="og:image" content="https://mahiro13th.github.io/tools/img/tennis-jst.jpg"><link rel="stylesheet" href="../style.css"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "テニスの試合時刻 日本時間変換ツール", "description": "全豪・全仏・ウィンブルドン・全米など、テニスの大会の現地の試合時刻を曜日付きの日本時間に変換する無料ツール。サマータイムも自動で計算し、その日の早見表も出します。", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": "ja", "url": "https://mahiro13th.github.io/tools/tennis-jst/", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"}}</script></head><body><header class="site"><div class="wrap"><a class="logo" href="../">まひろつーる</a><nav><a href="../#tools">ツール一覧</a><a href="../about/">運営者</a></nav></div></header><main class="wrap"><p class="crumb"><a href="../">ホーム</a> ＞ テニス観戦 ＞ テニスの試合時刻 日本時間変換</p><h1>テニスの試合時刻 日本時間変換ツール</h1><p class="lead">大会（開催地）を選んで現地の試合時刻を入れると、日本時間が曜日付きで出ます。その日の9時〜22時の早見表も出るので、「第2試合以降」のおおよその時間もつかめます。</p>
+<div id="ktn-root" class="ktn"></div>
+<style>
+.ktn{--a:#0f766e;--bg:#fff;--line:#d3dfdc;--sub:#5b6866;color:#1c2826 !important;background:#f3f8f7 !important;border:1px solid var(--line);border-radius:12px;padding:16px;max-width:640px;margin:1.5em auto;box-sizing:border-box;line-height:1.5;font-size:15px;text-align:left}
+.ktn *{box-sizing:border-box}
+.ktn-h{font-weight:700;font-size:1.15em;margin:0 0 12px}
+.ktn-sec{margin:0 0 14px}
+.ktn-lb{font-size:.85em;color:var(--sub);margin:0 0 6px;font-weight:700}
+.ktn-seg{display:flex;flex-wrap:wrap;gap:6px}
+.ktn button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:8px;padding:6px 12px;min-height:36px;margin:0;line-height:1.2;box-shadow:none}
+.ktn button.on{background:var(--a);border-color:var(--a);color:#fff}
+.ktn button.ktn-mini{min-height:30px;padding:3px 10px;font-size:.9em}
+.ktn select,.ktn input{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#1c2826;max-width:100%;min-height:36px}
+.ktn select{width:100%}
+.ktn-inl{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
+.ktn-res{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+.ktn-big{font-size:1.5em;font-weight:700;color:var(--a);line-height:1.3;font-variant-numeric:tabular-nums}
+.ktn-sub{font-size:.9em;color:var(--sub);margin-top:4px}
+.ktn-err{color:#b3261e;font-size:.9em;margin-top:6px}
+.ktn-note{font-size:.8em;color:var(--sub);margin-top:6px}
+.ktn-tw{margin-top:12px}
+.ktn table{border-collapse:collapse;width:100%;font-size:.9em;font-variant-numeric:tabular-nums;background:#fff}
+.ktn th,.ktn td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left}
+.ktn th{color:var(--sub);font-size:.88em}
+.ktn tr.ktn-cur td{background:#e3f2ef;font-weight:700}
+.ktn td.ktn-late{color:#8a5a00}
+@media (max-width:420px){.ktn{padding:12px}.ktn-big{font-size:1.25em}}
+</style>
+<script>
+(function(){
+var root=document.getElementById('ktn-root');
+if(!root){return;}
+var GROUPS=[
+{name:'4大大会（グランドスラム）',items:[
+{k:'ao',tz:'Australia/Melbourne',name:'全豪オープン（メルボルン）',mon:'1月'},
+{k:'rg',tz:'Europe/Paris',name:'全仏オープン（パリ）',mon:'5〜6月'},
+{k:'wb',tz:'Europe/London',name:'ウィンブルドン（ロンドン）',mon:'6〜7月'},
+{k:'uo',tz:'America/New_York',name:'全米オープン（ニューヨーク）',mon:'8〜9月'}]},
+{name:'主な大会（開催地）',items:[
+{k:'bri',tz:'Australia/Brisbane',name:'ブリスベン（オーストラリア）',mon:'1月'},
+{k:'ade',tz:'Australia/Adelaide',name:'アデレード（オーストラリア）',mon:'1月'},
+{k:'doh',tz:'Asia/Qatar',name:'ドーハ（カタール）',mon:'2月'},
+{k:'dub',tz:'Asia/Dubai',name:'ドバイ（UAE）',mon:'2〜3月'},
+{k:'iw',tz:'America/Los_Angeles',name:'インディアンウェルズ（アメリカ西部）',mon:'3月'},
+{k:'mia',tz:'America/New_York',name:'マイアミ（アメリカ東部）',mon:'3〜4月'},
+{k:'mc',tz:'Europe/Monaco',name:'モンテカルロ（モナコ）',mon:'4月'},
+{k:'mad',tz:'Europe/Madrid',name:'マドリード（スペイン）',mon:'4〜5月'},
+{k:'rom',tz:'Europe/Rome',name:'ローマ（イタリア）',mon:'5月'},
+{k:'can',tz:'America/Toronto',name:'カナダ（トロント・モントリオール）',mon:'8月'},
+{k:'cin',tz:'America/New_York',name:'シンシナティ（アメリカ東部）',mon:'8月'},
+{k:'bei',tz:'Asia/Shanghai',name:'北京・上海（中国）',mon:'9〜10月'},
+{k:'pm',tz:'Europe/Paris',name:'パリ（フランス・室内）',mon:'10〜11月'},
+{k:'tur',tz:'Europe/Rome',name:'トリノ（イタリア）',mon:'11月'},
+{k:'riy',tz:'Asia/Riyadh',name:'リヤド（サウジアラビア）',mon:''}]}
+];
+var QUICK=['10:00','11:00','12:00','13:00','14:00','18:00','19:00','20:00'];
+var WD=['日','月','火','水','木','金','土'];
+var now=new Date();
+function pad(n){return (n<10?'0':'')+n;}
+var st={dir:'toJst',k:'ao',date:now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate()),time:'19:00'};
+var resEl=null;var timeEl=null;
+function h(tag,attrs,kids){var e=document.createElement(tag);if(attrs){for(var a in attrs){if(a==='text'){e.textContent=attrs[a];}else if(a==='cls'){e.className=attrs[a];}else if(a.indexOf('on')===0){e.addEventListener(a.slice(2),attrs[a]);}else{e.setAttribute(a,attrs[a]);}}}if(kids){for(var j=0;j<kids.length;j++){if(kids[j]){e.appendChild(kids[j]);}}}return e;}
+function item(k){for(var g=0;g<GROUPS.length;g++){for(var i=0;i<GROUPS[g].items.length;i++){if(GROUPS[g].items[i].k===k){return GROUPS[g].items[i];}}}return GROUPS[0].items[0];}
+function parts(ms,tz){var f=new Intl.DateTimeFormat('en-US',{timeZone:tz,hourCycle:'h23',year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric',second:'numeric'});var p={};var a=f.formatToParts(new Date(ms));for(var i=0;i<a.length;i++){p[a[i].type]=a[i].value;}var hr=Number(p.hour);if(hr===24){hr=0;}return {y:Number(p.year),m:Number(p.month),d:Number(p.day),h:hr,mi:Number(p.minute),s:Number(p.second)};}
+function offset(ms,tz){var p=parts(ms,tz);return Date.UTC(p.y,p.m-1,p.d,p.h,p.mi,p.s)-Math.floor(ms/1000)*1000;}
+function wallToUtc(y,m,d,hh,mm,tz){var guess=Date.UTC(y,m-1,d,hh,mm);var u=guess-offset(guess,tz);u=guess-offset(u,tz);var p=parts(u,tz);var ok=p.y===y?(p.m===m?(p.d===d?(p.h===hh?p.mi===mm:false):false):false):false;return {ms:u,ok:ok};}
+function wd(p){return WD[new Date(Date.UTC(p.y,p.m-1,p.d)).getUTCDay()];}
+function fmt(ms,tz){var p=parts(ms,tz);return p.y+'年'+p.m+'月'+p.d+'日（'+wd(p)+'） '+pad(p.h)+':'+pad(p.mi);}
+function shortFmt(ms,tz){var p=parts(ms,tz);return p.m+'/'+p.d+'（'+wd(p)+'） '+pad(p.h)+':'+pad(p.mi);}
+function diffText(ms,tz){var o=(offset(ms,'Asia/Tokyo')-offset(ms,tz))/3600000;var r=Math.round(o*100)/100;if(r===0){return '時差なし';}return '日本は'+(r>0?r+'時間進んでいます':(-r)+'時間遅れています');}
+function isDst(ms,tz){var y=parts(ms,tz).y;var jan=offset(Date.UTC(y,0,15),tz);var jul=offset(Date.UTC(y,6,15),tz);if(jan===jul){return false;}return offset(ms,tz)===Math.max(jan,jul);}
+function renderResult(){
+if(!resEl){return;}resEl.textContent='';
+var it=item(st.k);
+var dm=/^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(st.date);var tm=/^(\d{1,2}):(\d{2})$/.exec(st.time);
+if(!dm){resEl.appendChild(h('div',{cls:'ktn-err',text:'日付を選んでください。'}));return;}
+if(!tm){resEl.appendChild(h('div',{cls:'ktn-err',text:'時刻を入れてください。'}));return;}
+var y=Number(dm[1]),m=Number(dm[2]),d=Number(dm[3]);
+var src=st.dir==='toJst'?it.tz:'Asia/Tokyo';var dst=st.dir==='toJst'?'Asia/Tokyo':it.tz;
+var r=wallToUtc(y,m,d,Number(tm[1]),Number(tm[2]),src);
+var srcLabel=st.dir==='toJst'?'現地（'+it.name+'）':'日本時間';
+var dstLabel=st.dir==='toJst'?'日本時間':'現地（'+it.name+'）';
+resEl.appendChild(h('div',{cls:'ktn-sub',text:srcLabel+'　'+fmt(r.ms,src)}));
+resEl.appendChild(h('div',{cls:'ktn-sub',text:dstLabel+'は'}));
+resEl.appendChild(h('div',{cls:'ktn-big',text:fmt(r.ms,dst)}));
+resEl.appendChild(h('div',{cls:'ktn-sub',text:diffText(r.ms,it.tz)+(isDst(r.ms,it.tz)?'（現地はサマータイム中）':'')}));
+if(!r.ok){resEl.appendChild(h('div',{cls:'ktn-err',text:'入力した時刻は、サマータイムの切り替えで存在しないか、2回ある時刻です。結果を確かめてください。'}));}
+var tb=h('tbody');
+for(var hh=9;hh<=22;hh++){var u=wallToUtc(y,m,d,hh,0,src).ms;var jp=parts(u,dst);var late=st.dir==='toJst'?(jp.h<6):false;
+tb.appendChild(h('tr',{cls:hh===Number(tm[1])?'ktn-cur':''},[h('td',{text:pad(hh)+':00'}),h('td',{cls:late?'ktn-late':'',text:shortFmt(u,dst)+(late?'（深夜・早朝）':'')})]));}
+resEl.appendChild(h('div',{cls:'ktn-tw'},[h('div',{cls:'ktn-lb',text:'この日の早見表（'+(st.dir==='toJst'?'現地 → 日本時間':'日本時間 → 現地')+'）'}),h('table',null,[h('thead',null,[h('tr',null,[h('th',{text:st.dir==='toJst'?'現地':'日本時間'}),h('th',{text:st.dir==='toJst'?'日本時間':'現地'})])]),tb])]));}
+function render(){
+root.textContent='';
+root.appendChild(h('div',{cls:'ktn-h',text:'テニスの試合時刻 日本時間変換'}));
+var dirs=[{id:'toJst',name:'現地 → 日本時間'},{id:'toLocal',name:'日本時間 → 現地'}];
+var seg=h('div',{cls:'ktn-seg'});for(var i=0;i<dirs.length;i++){(function(dd){seg.appendChild(h('button',{type:'button',cls:dd.id===st.dir?'on':'',text:dd.name,onclick:function(){st.dir=dd.id;render();}}));})(dirs[i]);}
+root.appendChild(h('div',{cls:'ktn-sec'},[h('div',{cls:'ktn-lb',text:'変換の向き'}),seg]));
+var sel=h('select',{'aria-label':'大会・開催地',onchange:function(e){st.k=e.target.value;renderResult();}});
+for(var g=0;g<GROUPS.length;g++){var og=h('optgroup',{label:GROUPS[g].name});for(var z=0;z<GROUPS[g].items.length;z++){var it=GROUPS[g].items[z];var o=h('option',{value:it.k,text:it.name+(it.mon?'　'+it.mon:'')});if(it.k===st.k){o.selected=true;}og.appendChild(o);}sel.appendChild(og);}
+root.appendChild(h('div',{cls:'ktn-sec'},[h('div',{cls:'ktn-lb',text:'大会・開催地'}),sel]));
+var di=h('input',{type:'date',value:st.date,'aria-label':'日付',oninput:function(e){st.date=e.target.value;renderResult();}});
+timeEl=h('input',{type:'time',value:st.time,step:'300','aria-label':'時刻',oninput:function(e){st.time=e.target.value;renderResult();}});
+var lab=st.dir==='toJst'?'現地の':'日本時間の';
+root.appendChild(h('div',{cls:'ktn-sec ktn-inl'},[h('div',null,[h('div',{cls:'ktn-lb',text:lab+'日付'}),di]),h('div',null,[h('div',{cls:'ktn-lb',text:lab+'時刻'}),timeEl])]));
+var qs=h('div',{cls:'ktn-seg'});for(var q=0;q<QUICK.length;q++){(function(t){qs.appendChild(h('button',{type:'button',cls:'ktn-mini'+(st.time===t?' on':''),text:t,onclick:function(){st.time=t;render();}}));})(QUICK[q]);}
+root.appendChild(h('div',{cls:'ktn-sec'},[h('div',{cls:'ktn-lb',text:'よく使う時刻'}),qs]));
+resEl=h('div',{cls:'ktn-res'});root.appendChild(resEl);
+root.appendChild(h('div',{cls:'ktn-note',text:'※テニスは前の試合が終わってから始まるため、2試合目以降の開始時刻は「◯時以降」の目安です。時差とサマータイムは、お使いの端末のタイムゾーン情報で計算しています。大会の日程と開催地は公式発表で確かめてください。'}));
+renderResult();}
+render();
+})();
+</script>
+
+<h2>使い方</h2>
+<ol>
+<li>大会・開催地を選ぶ（4大大会と、主な大会の開催地）</li>
+<li>現地の日付と時刻を入れる。「よく使う時刻」のボタンでも選べる</li>
+<li>日本時間が曜日付きで出る。下の早見表で、ほかの時刻もまとめて確かめられる</li>
+</ol>
+<p>「日本時間 → 現地」に切り替えると、日本で見たい時間が現地の何時かも分かります。</p>
+<h2>よくある質問</h2>
+<h3>全米オープンのナイトセッションは日本時間で何時ですか？</h3>
+<p>現地19:00開始なら、日本時間は翌朝8:00です（夏時間中、時差13時間）。たとえば2026年9月1日19:00は、日本時間の9月2日（水）8:00です。</p>
+<h3>全豪オープンは時差が小さいのですか？</h3>
+<p>はい。1月のメルボルンは夏時間で、日本より2時間進んでいます。現地19:00は日本時間17:00です。</p>
+<h3>2試合目以降の時刻はどう見ればいいですか？</h3>
+<p>テニスは前の試合が終わってから次の試合が始まるので、2試合目以降は「◯時以降」の目安になります。早見表で、前後の時間帯の日本時間をまとめて確かめてください。</p>
+<a class="more" href="https://kuromemo.blog.jp/archives/cat_379064.html">くろめも：テニスの記事一覧 →<small>計算の考え方や、くわしい例はブログで紹介しています</small></a><section class="related"><h2>ほかのツール</h2><ul><li><a href="../bakken-tensu/">馬券の点数・金額計算</a>（競馬）</li><li><a href="../gousei-odds/">合成オッズ・トリガミ判定</a>（競馬）</li><li><a href="../keiba-shushi/">競馬の収支・回収率計算</a>（競馬）</li><li><a href="../gacha-kakuritsu/">ガチャ確率計算</a>（ゲーム）</li><li><a href="../kickoff-jst/">キックオフ時刻 日本時間変換</a>（サッカー観戦）</li></ul></section></main><footer class="site"><div class="wrap"><a href="../">ホーム</a><a href="../about/">運営者情報</a><a href="../privacy/">プライバシーポリシー</a><p>計算結果は目安です。実際の払戻・排出率・試合日時は、公式の情報で確かめてください。</p><p>© 2026 まひろつーる</p></div></footer></body></html>
