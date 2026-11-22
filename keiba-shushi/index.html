@@ -1,0 +1,138 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>競馬の収支・回収率計算ツール｜まひろつーる</title><meta name="description" content="購入金額と払戻を記録するだけで、回収率・収支・的中率を計算する無料ツール。月ごとの集計とCSVの書き出しもできます。記録はブラウザの中だけに保存します。"><link rel="canonical" href="https://mahiro13th.github.io/tools/keiba-shushi/"><meta property="og:title" content="競馬の収支・回収率計算ツール｜まひろつーる"><meta property="og:description" content="購入金額と払戻を記録するだけで、回収率・収支・的中率を計算する無料ツール。月ごとの集計とCSVの書き出しもできます。記録はブラウザの中だけに保存します。"><meta property="og:url" content="https://mahiro13th.github.io/tools/keiba-shushi/"><meta property="og:site_name" content="まひろつーる"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta property="og:image" content="https://mahiro13th.github.io/tools/img/keiba-shushi.jpg"><link rel="stylesheet" href="../style.css"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "競馬の収支・回収率計算ツール", "description": "購入金額と払戻を記録するだけで、回収率・収支・的中率を計算する無料ツール。月ごとの集計とCSVの書き出しもできます。記録はブラウザの中だけに保存します。", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": "ja", "url": "https://mahiro13th.github.io/tools/keiba-shushi/", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"}}</script></head><body><header class="site"><div class="wrap"><a class="logo" href="../">まひろつーる</a><nav><a href="../#tools">ツール一覧</a><a href="../about/">運営者</a></nav></div></header><main class="wrap"><p class="crumb"><a href="../">ホーム</a> ＞ 競馬 ＞ 競馬の収支・回収率計算</p><h1>競馬の収支・回収率計算ツール</h1><p class="lead">買った金額と払戻を記録していくだけで、回収率・収支・的中率が出ます。月ごとの集計もします。登録は不要で、記録はお使いのブラウザの中にだけ保存します。</p>
+<div id="kss-root" class="kss"></div>
+<style>
+.kss{--a:#1f7a4d;--bg:#fff;--line:#d3dbd6;--sub:#5c6660;--bad:#b3261e;--good:#1f7a4d;color:#1d2420 !important;background:#f5f8f6 !important;border:1px solid var(--line);border-radius:12px;padding:16px;max-width:640px;margin:1.5em auto;box-sizing:border-box;line-height:1.5;font-size:15px;text-align:left}
+.kss *{box-sizing:border-box}
+.kss-h{font-weight:700;font-size:1.15em;margin:0 0 12px}
+.kss-sec{margin:0 0 14px}
+.kss-lb{font-size:.8em;color:var(--sub);margin:0 0 4px;font-weight:700}
+.kss button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:8px;padding:6px 12px;min-height:36px;margin:0;line-height:1.2;box-shadow:none}
+.kss button.kss-pri{background:var(--a);border-color:var(--a);color:#fff;font-weight:700}
+.kss button.on{background:var(--a);border-color:var(--a);color:#fff}
+.kss input{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#1d2420;width:100%;min-width:0;min-height:36px}
+.kss-form{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kss-form .kss-wide{grid-column:1 / -1}
+.kss-seg{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.kss-res{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+.kss-big{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kss-big div{font-size:.8em;color:var(--sub)}
+.kss-big b{display:block;font-size:1.45em;color:#1d2420;font-variant-numeric:tabular-nums;line-height:1.25}
+.kss-big b.kss-plus{color:var(--good)}
+.kss-big b.kss-minus{color:var(--bad)}
+.kss-sub{font-size:.85em;color:var(--sub);margin:8px 0 0}
+.kss-tw{overflow-x:auto;margin:10px 0 0}
+.kss table{border-collapse:collapse;width:100%;font-size:.88em;font-variant-numeric:tabular-nums;background:#fff}
+.kss th,.kss td{border-bottom:1px solid var(--line);padding:6px 6px;text-align:right;white-space:nowrap}
+.kss th{color:var(--sub);font-weight:700;font-size:.9em}
+.kss td.kss-l,.kss th.kss-l{text-align:left;white-space:normal}
+.kss td.kss-plus{color:var(--good)}
+.kss td.kss-minus{color:var(--bad)}
+.kss td button{min-height:28px;padding:0 8px}
+.kss-note{font-size:.8em;color:var(--sub);margin:8px 0 0}
+.kss-err{font-size:.85em;color:var(--bad);margin:6px 0 0}
+.kss-bar{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
+.kss td small{display:block;color:var(--sub);font-size:.85em;white-space:normal;word-break:break-all}
+@media (max-width:480px){.kss table{font-size:.8em}.kss-big b{font-size:1.15em}.kss{padding:12px}.kss th,.kss td{padding:6px 4px}}
+</style>
+<script>
+(function(){
+var root=document.getElementById('kss-root');
+if(!root){return;}
+var KEY='kss-records-v1';
+var recs=[];
+var period='all';
+var form={date:'',memo:'',bet:'',pay:''};
+var msg='';
+function load(){try{var s=window.localStorage.getItem(KEY);if(s){var a=JSON.parse(s);if(Array.isArray(a)){recs=a;}}}catch(e){recs=[];}}
+function save(){try{window.localStorage.setItem(KEY,JSON.stringify(recs));return true;}catch(e){return false;}}
+function h(tag,attrs,kids){var e=document.createElement(tag);if(attrs){for(var a in attrs){if(a==='text'){e.textContent=attrs[a];}else if(a==='cls'){e.className=attrs[a];}else if(a.indexOf('on')===0){e.addEventListener(a.slice(2),attrs[a]);}else{e.setAttribute(a,attrs[a]);}}}if(kids){for(var j=0;j<kids.length;j++){if(kids[j]){e.appendChild(kids[j]);}}}return e;}
+function num(s){var t=String(s).replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-65248);}).replace(/[,，円\s]/g,'');if(t===''){return NaN;}return Number(t);}
+function yen(v){return (v<0?'-':'')+Math.abs(Math.round(v)).toLocaleString('ja-JP')+'円';}
+function signed(v){return (v>0?'+':'')+yen(v);}
+function pad(n){return n<10?'0'+n:String(n);}
+function today(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function inPeriod(r){if(period==='all'){return true;}var t=today();if(period==='month'){return r.date.slice(0,7)===t.slice(0,7);}return r.date.slice(0,4)===t.slice(0,4);}
+function sum(list){var o={n:list.length,hit:0,bet:0,pay:0};for(var i=0;i<list.length;i++){o.bet+=list[i].bet;o.pay+=list[i].pay;if(list[i].pay>0){o.hit++;}}o.net=o.pay-o.bet;o.rate=o.bet>0?o.pay/o.bet*100:NaN;o.hitRate=o.n>0?o.hit/o.n*100:NaN;return o;}
+function pct(v){return isNaN(v)?'-':(Math.round(v*10)/10).toFixed(1)+'%';}
+function add(){
+var b=num(form.bet);var p=form.pay===''?0:num(form.pay);
+if(isNaN(b)){msg='購入金額を数字で入れてください。';render();return;}
+if(b<=0){msg='購入金額は1円以上にしてください。';render();return;}
+if(isNaN(p)){msg='払戻金額は数字で入れてください（外れたら空欄か0）。';render();return;}
+if(p<0){msg='払戻金額は0円以上にしてください。';render();return;}
+var d=form.date===''?today():form.date;
+recs.push({id:Date.now()+'-'+Math.floor(Math.random()*1000),date:d,memo:form.memo.trim().slice(0,40),bet:Math.round(b),pay:Math.round(p)});
+recs.sort(function(x,y){return x.date<y.date?1:(x.date>y.date?-1:0);});
+var ok=save();
+form.memo='';form.bet='';form.pay='';
+msg=ok?'':'このブラウザでは保存できませんでした。ページを閉じると記録が消えます。';
+render();}
+function del(id){for(var i=0;i<recs.length;i++){if(recs[i].id===id){recs.splice(i,1);break;}}save();render();}
+function clearAll(){if(recs.length===0){return;}if(!window.confirm('記録をすべて消します。元に戻せません。よろしいですか？')){return;}recs=[];save();render();}
+function exportCsv(){
+var lines=['日付,メモ,購入金額,払戻金額,収支'];
+for(var i=0;i<recs.length;i++){var r=recs[i];lines.push([r.date,'"'+r.memo.replace(/"/g,'""')+'"',r.bet,r.pay,r.pay-r.bet].join(','));}
+var blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv'});
+var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='keiba-shushi-'+today()+'.csv';document.body.appendChild(a);a.click();
+setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);}
+function field(key,label,type,ph,mode,wide){
+var inp=h('input',{type:type,placeholder:ph||'',value:form[key],'aria-label':label,oninput:function(e){form[key]=e.target.value;}});
+if(mode){inp.setAttribute('inputmode',mode);}
+if(key==='pay'){inp.addEventListener('keydown',function(e){if(e.key==='Enter'){add();}});}
+return h('div',{cls:wide?'kss-wide':''},[h('div',{cls:'kss-lb',text:label}),inp]);}
+function render(){
+root.textContent='';
+root.appendChild(h('div',{cls:'kss-h',text:'競馬の収支・回収率計算'}));
+if(form.date===''){form.date=today();}
+root.appendChild(h('div',{cls:'kss-sec'},[h('div',{cls:'kss-form'},[
+field('date','日付','date','','',false),
+field('memo','メモ（任意）','text','例 東京11R 3連複','',false),
+field('bet','購入金額（円）','text','例 3000','numeric',false),
+field('pay','払戻金額（円・外れは空欄）','text','例 4500','numeric',false)
+]),h('div',{cls:'kss-bar'},[h('button',{type:'button',cls:'kss-pri',text:'記録する',onclick:add})])]));
+if(msg){root.appendChild(h('div',{cls:'kss-err',text:msg}));}
+var seg=h('div',{cls:'kss-seg'});
+var ps=[['all','すべて'],['year','今年'],['month','今月']];
+for(var i=0;i<ps.length;i++){(function(p){seg.appendChild(h('button',{type:'button',cls:period===p[0]?'on':'',text:p[1],onclick:function(){period=p[0];render();}}));})(ps[i]);}
+var list=[];for(var j=0;j<recs.length;j++){if(inPeriod(recs[j])){list.push(recs[j]);}}
+var s=sum(list);
+var res=h('div',{cls:'kss-res'});
+res.appendChild(seg);
+res.appendChild(h('div',{cls:'kss-big'},[
+h('div',null,[document.createTextNode('回収率'),h('b',{cls:isNaN(s.rate)?'':(s.rate>=100?'kss-plus':'kss-minus'),text:pct(s.rate)})]),
+h('div',null,[document.createTextNode('収支'),h('b',{cls:s.net>0?'kss-plus':(s.net<0?'kss-minus':''),text:signed(s.net)})]),
+h('div',null,[document.createTextNode('的中率'),h('b',{text:pct(s.hitRate)})])]));
+res.appendChild(h('div',{cls:'kss-sub',text:s.n+'件（的中'+s.hit+'件）　購入 '+yen(s.bet)+'　払戻 '+yen(s.pay)}));
+if(list.length===0){res.appendChild(h('div',{cls:'kss-note',text:recs.length===0?'購入金額と払戻金額を記録すると、回収率と収支を計算します。':'この期間の記録はありません。'}));}
+var months={};var order=[];
+for(var k=0;k<list.length;k++){var m=list[k].date.slice(0,7);if(!months[m]){months[m]=[];order.push(m);}months[m].push(list[k]);}
+if(order.length>1){
+var mb=h('tbody');
+for(var q=0;q<order.length;q++){var ms=sum(months[order[q]]);mb.appendChild(h('tr',null,[h('td',{text:order[q].replace('-','/')}),h('td',{text:ms.n+'件'}),h('td',{text:yen(ms.bet)}),h('td',{text:yen(ms.pay)}),h('td',{cls:ms.net>0?'kss-plus':(ms.net<0?'kss-minus':''),text:signed(ms.net)}),h('td',{text:pct(ms.rate)})]));}
+res.appendChild(h('div',{cls:'kss-tw'},[h('table',null,[h('thead',null,[h('tr',null,[h('th',{text:'月'}),h('th',{text:'件数'}),h('th',{text:'購入'}),h('th',{text:'払戻'}),h('th',{text:'収支'}),h('th',{text:'回収率'})])]),mb])]));}
+if(list.length>0){
+var tb=h('tbody');
+for(var r=0;r<list.length;r++){(function(x){var net=x.pay-x.bet;tb.appendChild(h('tr',null,[h('td',{cls:'kss-l'},[document.createTextNode(x.date.slice(5).replace('-','/')),x.memo?h('small',{text:x.memo}):null]),h('td',{text:yen(x.bet)}),h('td',{text:yen(x.pay)}),h('td',{cls:net>0?'kss-plus':(net<0?'kss-minus':''),text:signed(net)}),h('td',null,[h('button',{type:'button',text:'×','aria-label':x.date+'の記録を削除',onclick:function(){del(x.id);}})])]));})(list[r]);}
+res.appendChild(h('div',{cls:'kss-tw'},[h('table',null,[h('thead',null,[h('tr',null,[h('th',{cls:'kss-l',text:'日付・メモ'}),h('th',{text:'購入'}),h('th',{text:'払戻'}),h('th',{text:'収支'}),h('th',{text:''})])]),tb])]));}
+root.appendChild(h('div',{cls:'kss-sec'},[res]));
+if(recs.length>0){root.appendChild(h('div',{cls:'kss-bar'},[h('button',{type:'button',text:'CSVで書き出す',onclick:exportCsv}),h('button',{type:'button',text:'記録をすべて消す',onclick:clearAll})]));}
+root.appendChild(h('div',{cls:'kss-note',text:'※記録は、お使いのブラウザの中にだけ保存します。外部には送りません。ブラウザの履歴やサイトデータを消すと、記録も消えます。大事な記録はCSVで書き出しておいてください。'}));}
+load();render();
+})();
+</script>
+
+<h2>使い方</h2>
+<ol>
+<li>日付と購入金額を入れる。当たったときは払戻金額も入れる（外れたら空欄でよい）</li>
+<li>「記録する」を押す。回収率・収支・的中率がすぐに変わる</li>
+<li>「すべて・今年・今月」で集計する期間を切り替える。2か月以上の記録があると、月ごとの表も出る</li>
+</ol>
+<p>メモ欄にレース名や券種を書いておくと、あとで見返しやすくなります。</p>
+<h2>よくある質問</h2>
+<h3>回収率はどう計算していますか？</h3>
+<p>「払戻の合計 ÷ 購入の合計 × 100」です。3万円買って払戻が3万3,750円なら、回収率は112.5%、収支は＋3,750円です。100%を超えていればプラスです。</p>
+<h3>的中率は何を数えていますか？</h3>
+<p>記録した件数のうち、払戻が1円以上あった件数の割合です。1レースで何点か買ったときは、まとめて1件として記録すると「レース単位の的中率」になります。</p>
+<h3>記録は消えませんか？</h3>
+<p>同じ端末・同じブラウザで開けば残っています。ただし、ブラウザの履歴やサイトデータを消すと記録も消えます。別の端末とは共有されません。大事な記録は「CSVで書き出す」で保存しておいてください。</p>
+<a class="more" href="https://kuromemo.blog.jp/archives/cat_428911.html">くろめも：競馬の結果記事と払戻 →<small>計算の考え方や、くわしい例はブログで紹介しています</small></a><section class="related"><h2>ほかのツール</h2><ul><li><a href="../bakken-tensu/">馬券の点数・金額計算</a>（競馬）</li><li><a href="../gousei-odds/">合成オッズ・トリガミ判定</a>（競馬）</li><li><a href="../gacha-kakuritsu/">ガチャ確率計算</a>（ゲーム）</li><li><a href="../kickoff-jst/">キックオフ時刻 日本時間変換</a>（サッカー観戦）</li></ul></section></main><footer class="site"><div class="wrap"><a href="../">ホーム</a><a href="../about/">運営者情報</a><a href="../privacy/">プライバシーポリシー</a><p>計算結果は目安です。実際の払戻・排出率・試合日時は、公式の情報で確かめてください。</p><p>© 2026 まひろつーる</p></div></footer></body></html>
