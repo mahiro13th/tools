@@ -128,4 +128,19 @@ render();
 <p>相手が6頭なら90点です。同じ相手で3連複の軸1頭流しにすると15点なので、6倍の差があります。</p>
 <h3>5頭ボックスは何点ですか？</h3>
 <p>馬連・ワイドは10点、馬単は20点、3連複は10点、3連単は60点です。</p>
-<a class="more" href="https://kuromemo.blog.jp/archives/40964688.html">くろめも：点数計算ツールの詳しい解説 →<small>計算の考え方や、くわしい例はブログで紹介しています</small></a><section class="related"><h2>ほかのツール</h2><ul><li><a href="../gousei-odds/">合成オッズ・トリガミ判定</a>（競馬）</li><li><a href="../keiba-shushi/">競馬の収支・回収率計算</a>（競馬）</li><li><a href="../keiba-haitou/">競馬の配当・払戻計算</a>（競馬）</li><li><a href="../gacha-kakuritsu/">ガチャ確率計算</a>（ゲーム）</li><li><a href="../kickoff-jst/">キックオフ時刻 日本時間変換</a>（サッカー観戦）</li><li><a href="../tennis-jst/">テニスの試合時刻 日本時間変換</a>（テニス観戦）</li><li><a href="../jewel-chokin/">ジュエル・石の貯金計算</a>（ゲーム）</li><li><a href="../soccer-kachiten/">サッカーの勝ち点計算（優勝・降格ライン）</a>（サッカー観戦）</li></ul></section></main><footer class="site"><div class="wrap"><a href="../">ホーム</a><a href="../about/">運営者情報</a><a href="../privacy/">プライバシーポリシー</a><p>計算結果は目安です。実際の払戻・排出率・試合日時は、公式の情報で確かめてください。</p><p>© 2026 まひろつーる</p></div></footer></body></html>
+<h2>こんなときに使う</h2>
+<ul>
+<li>買いたい馬を何頭か選んだあと、予算に収まるかを確かめたいとき</li>
+<li>ボックスと流しのどちらにするか、点数と金額を比べて決めたいとき</li>
+<li>フォーメーションの組み方を変えて、点数がどれくらい増えるかを見たいとき</li>
+</ul>
+<h2>点数の計算のしくみ（ボックス）</h2>
+<p>着順を問わない券種（馬連・ワイド・3連複）は「組み合わせ」、着順どおりに当てる券種（馬単・3連単）は「並べ方」の数が点数になります。頭数を n とすると、次のとおりです。</p>
+<ul>
+<li>馬連・ワイド：n ×（n − 1）÷ 2　…5頭なら10点</li>
+<li>馬単：n ×（n − 1）　…5頭なら20点</li>
+<li>3連複：n ×（n − 1）×（n − 2）÷ 6　…7頭なら35点</li>
+<li>3連単：n ×（n − 1）×（n − 2）　…6頭なら120点</li>
+</ul>
+<p>3連単は、頭数が1頭増えるだけで点数が大きく増えます。6頭なら120点ですが、7頭にすると210点です。買う前に、合計金額を必ず確かめておきましょう。</p>
+<section class="related"><h2>あわせて使うと便利なツール</h2><ul><li><a href="../gousei-odds/">合成オッズ・トリガミ判定</a>：点数が決まったら、トリガミにならないか確かめる</li><li><a href="../keiba-shushi/">競馬の収支・回収率計算</a>：買った結果を記録して、回収率を見る</li></ul></section><a class="more" href="https://kuromemo.blog.jp/archives/40964688.html">くろめも：点数計算ツールの詳しい解説 →<small>計算の考え方や、くわしい例はブログで紹介しています</small></a><section class="related"><h2>ほかのツール</h2><ul><li><a href="../gousei-odds/">合成オッズ・トリガミ判定</a>（競馬）</li><li><a href="../keiba-shushi/">競馬の収支・回収率計算</a>（競馬）</li><li><a href="../keiba-haitou/">競馬の配当・払戻計算</a>（競馬）</li><li><a href="../gacha-kakuritsu/">ガチャ確率計算</a>（ゲーム）</li><li><a href="../kickoff-jst/">キックオフ時刻 日本時間変換</a>（サッカー観戦）</li><li><a href="../tennis-jst/">テニスの試合時刻 日本時間変換</a>（テニス観戦）</li><li><a href="../jewel-chokin/">ジュエル・石の貯金計算</a>（ゲーム）</li><li><a href="../soccer-kachiten/">サッカーの勝ち点計算（優勝・降格ライン）</a>（サッカー観戦）</li></ul></section></main><footer class="site"><div class="wrap"><a href="../">ホーム</a><a href="../about/">運営者情報</a><a href="../privacy/">プライバシーポリシー</a><p>計算結果は目安です。実際の払戻・排出率・試合日時は、公式の情報で確かめてください。</p><p>© 2026 まひろつーる</p></div></footer></body></html>
