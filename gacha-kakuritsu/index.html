@@ -1,0 +1,82 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ガチャ確率計算ツール｜まひろつーる</title><meta name="description" content="排出率と回す回数から、1回以上出る確率と、50%・90%・99%に必要な回数を計算する無料ツール。天井と消費も入れられます。"><link rel="canonical" href="https://mahiro13th.github.io/tools/gacha-kakuritsu/"><meta property="og:title" content="ガチャ確率計算ツール｜まひろつーる"><meta property="og:description" content="排出率と回す回数から、1回以上出る確率と、50%・90%・99%に必要な回数を計算する無料ツール。天井と消費も入れられます。"><meta property="og:url" content="https://mahiro13th.github.io/tools/gacha-kakuritsu/"><meta property="og:site_name" content="まひろつーる"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta property="og:image" content="https://mahiro13th.github.io/tools/img/gacha-kakuritsu.jpg"><link rel="stylesheet" href="../style.css"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "ガチャ確率計算ツール", "description": "排出率と回す回数から、1回以上出る確率と、50%・90%・99%に必要な回数を計算する無料ツール。天井と消費も入れられます。", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": "ja", "url": "https://mahiro13th.github.io/tools/gacha-kakuritsu/", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"}}</script></head><body><header class="site"><div class="wrap"><a class="logo" href="../">まひろつーる</a><nav><a href="../#tools">ツール一覧</a><a href="../about/">運営者</a></nav></div></header><main class="wrap"><p class="crumb"><a href="../">ホーム</a> ＞ ゲーム ＞ ガチャ確率計算</p><h1>ガチャ確率計算ツール</h1><p class="lead">排出率と回す回数を入れると、目当てが1回以上出る確率と、確率50%・90%・99%に届くまでの回数が分かります。</p>
+<div id="kgc-root" class="kgc"></div>
+<style>
+.kgc{--a:#7c3aed;--bg:#fff;--line:#ddd6ea;--sub:#5f5870;color:#1f1a2b !important;background:#f7f5fb !important;border:1px solid var(--line);border-radius:12px;padding:16px;max-width:640px;margin:1.5em auto;box-sizing:border-box;line-height:1.5;font-size:15px;text-align:left}
+.kgc *{box-sizing:border-box}
+.kgc-h{font-weight:700;font-size:1.15em;margin:0 0 12px}
+.kgc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-bottom:14px}
+.kgc-lb{font-size:.85em;color:var(--sub);margin:0 0 4px;font-weight:700}
+.kgc input{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#1f1a2b;width:100%;min-width:0}
+.kgc-res{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+.kgc-big{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:8px}
+.kgc-big div{font-size:.85em;color:var(--sub)}
+.kgc-big b{display:block;font-size:1.6em;color:var(--a);font-variant-numeric:tabular-nums;line-height:1.2}
+.kgc-bar{height:10px;background:#ece8f4;border-radius:5px;overflow:hidden;margin:4px 0 10px}
+.kgc-bar span{display:block;height:100%;background:var(--a)}
+.kgc-tw{overflow-x:auto}
+.kgc table{border-collapse:collapse;width:100%;min-width:300px;font-size:.9em;font-variant-numeric:tabular-nums;background:#fff !important;color:#1f1a2b !important}
+.kgc th,.kgc td{border:1px solid var(--line);padding:6px 8px;text-align:right;white-space:nowrap;background:#fff !important;color:#1f1a2b !important}
+.kgc th{background:#f0ecf7 !important;text-align:center}
+.kgc-err{color:#b3261e;font-size:.9em;margin-top:6px}
+.kgc-note{font-size:.8em;color:var(--sub);margin-top:6px}
+@media (max-width:420px){.kgc{padding:12px}}
+</style>
+<script>
+(function(){
+var root=document.getElementById('kgc-root');
+if(!root){return;}
+var st={rate:'1.5',pulls:'100',cost:'',ceil:''};
+var resEl=null;
+function h(tag,attrs,kids){var e=document.createElement(tag);if(attrs){for(var a in attrs){if(a==='text'){e.textContent=attrs[a];}else if(a==='cls'){e.className=attrs[a];}else if(a.indexOf('on')===0){e.addEventListener(a.slice(2),attrs[a]);}else{e.setAttribute(a,attrs[a]);}}}if(kids){for(var j=0;j<kids.length;j++){if(kids[j]){e.appendChild(kids[j]);}}}return e;}
+function num(s){var t=String(s).replace(/[０-９．]/g,function(c){return c==='．'?'.':String.fromCharCode(c.charCodeAt(0)-65248);}).replace(/[,%％]/g,'').trim();if(t===''){return NaN;}return Number(t);}
+function pct(x){if(x>=1){return '100%';}var v=Math.floor(x*1000)/10;if(v>=100){v=99.9;}return v.toFixed(1)+'%';}
+function need(p,q){return Math.ceil(Math.log(1-q)/Math.log(1-p)-1e-9);}
+function renderResult(){
+if(!resEl){return;}resEl.textContent='';
+var r=num(st.rate);var n=Math.floor(num(st.pulls));var c=num(st.cost);var cl=Math.floor(num(st.ceil));
+if(isNaN(r)){resEl.appendChild(h('div',{cls:'kgc-err',text:'排出率を入れてください。'}));return;}
+if(r<=0){resEl.appendChild(h('div',{cls:'kgc-err',text:'排出率は0より大きい値を入れてください。'}));return;}
+if(r>100){resEl.appendChild(h('div',{cls:'kgc-err',text:'排出率は100%以下で入れてください。'}));return;}
+if(isNaN(n)){n=0;}if(n<0){n=0;}
+var p=r/100;var hasCeil=isNaN(cl)?false:cl>0;var hasCost=isNaN(c)?false:c>0;
+var p1=hasCeil?(n>=cl?1:1-Math.pow(1-p,n)):1-Math.pow(1-p,n);
+var p2=1-Math.pow(1-p,n)-n*p*Math.pow(1-p,n-1);if(n<2){p2=0;}
+var bar=h('div',{cls:'kgc-bar'},[h('span')]);bar.firstChild.style.width=Math.min(100,p1*100)+'%';
+var kids=[h('div',null,[document.createTextNode(n+'回で1回以上出る確率'),h('b',{text:pct(p1)})]),h('div',null,[document.createTextNode('出る数の平均'),h('b',{text:(Math.round(n*p*100)/100)+'回'})])];
+if(hasCost){kids.push(h('div',null,[document.createTextNode(n+'回分の消費'),h('b',{text:(n*c).toLocaleString('ja-JP')})]));}
+resEl.appendChild(h('div',{cls:'kgc-big'},kids));resEl.appendChild(bar);
+if(hasCeil){if(n>=cl){resEl.appendChild(h('div',{cls:'kgc-note',text:'天井（'+cl+'回）に届くので、確実に手に入ります。'}));}}
+if(p2>0){resEl.appendChild(h('div',{cls:'kgc-note',text:'2回以上出る確率：'+pct(p2)+'（天井は考えていません）'}));}
+var tb=h('tbody');var qs=[0.5,0.8,0.9,0.95,0.99];
+for(var i=0;i<qs.length;i++){var k=p>=1?1:need(p,qs[i]);var capped=hasCeil?k>cl:false;var shown=capped?cl:k;
+var row=[h('td',{text:Math.round(qs[i]*100)+'%'}),h('td',{text:shown.toLocaleString('ja-JP')+'回'+(capped?'（天井）':'')})];
+if(hasCost){row.push(h('td',{text:(shown*c).toLocaleString('ja-JP')}));}
+tb.appendChild(h('tr',null,row));}
+var th=h('tr',null,[h('th',{text:'確率'}),h('th',{text:'必要な回数'})]);if(hasCost){th.appendChild(h('th',{text:'消費'}));}
+resEl.appendChild(h('div',{cls:'kgc-lb',text:'この確率で1回以上出すのに必要な回数'}));
+resEl.appendChild(h('div',{cls:'kgc-tw'},[h('table',null,[h('thead',null,[th]),tb])]));}
+function field(key,lab,ph,mode){return h('div',null,[h('div',{cls:'kgc-lb',text:lab}),h('input',{type:'text',inputmode:mode,placeholder:ph,value:st[key],'aria-label':lab,oninput:function(e){st[key]=e.target.value;renderResult();}})]);}
+function render(){
+root.textContent='';
+root.appendChild(h('div',{cls:'kgc-h',text:'ガチャ確率計算'}));
+root.appendChild(h('div',{cls:'kgc-grid'},[field('rate','排出率（%）','例 1.5','decimal'),field('pulls','回す回数','例 100','numeric'),field('cost','1回の消費（任意）','例 25','decimal'),field('ceil','天井の回数（任意）','例 200','numeric')]));
+resEl=h('div',{cls:'kgc-res'});root.appendChild(resEl);
+root.appendChild(h('div',{cls:'kgc-note',text:'※毎回同じ確率で抽選される前提の計算です。排出率と天井は、ゲーム内の提供割合・ガチャ詳細で確かめてください。'}));
+renderResult();}
+render();
+})();
+</script>
+
+<h2>使い方</h2>
+<ol>
+<li>排出率（%）と、回す回数を入れる</li>
+<li>1回以上出る確率、平均で出る数、2回以上出る確率が出る</li>
+<li>天井や1回あたりの消費を入れると、天井までの回数や必要な量も計算する（入れなくても使える）</li>
+</ol>
+<h2>よくある質問</h2>
+<h3>排出率1.5%を100回引くと、何%で出ますか？</h3>
+<p>約77.9%です。平均では1.5回出る計算ですが、5回に1回くらいは1回も出ません。</p>
+<h3>90%の確率で出すには何回必要ですか？</h3>
+<p>排出率1.5%なら153回、3%なら76回、0.5%なら460回です。</p>
+<p class="note">ゲームごとの排出率や天井は書いていません。実際の数字は各ゲームの公式の表示で確かめてください。</p>
+<a class="more" href="https://whitechatnoir680yen.blog.jp/archives/38837683.html">白猫ニュースノート：ガチャ確率の計算例 →<small>計算の考え方や、くわしい例はブログで紹介しています</small></a><section class="related"><h2>ほかのツール</h2><ul><li><a href="../bakken-tensu/">馬券の点数・金額計算</a>（競馬）</li><li><a href="../gousei-odds/">合成オッズ・トリガミ判定</a>（競馬）</li><li><a href="../kickoff-jst/">キックオフ時刻 日本時間変換</a>（サッカー観戦）</li></ul></section></main><footer class="site"><div class="wrap"><a href="../">ホーム</a><a href="../about/">運営者情報</a><a href="../privacy/">プライバシーポリシー</a><p>計算結果は目安です。実際の払戻・排出率・試合日時は、公式の情報で確かめてください。</p><p>© 2026 まひろつーる</p></div></footer></body></html>

@@ -1,0 +1,131 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>馬券の点数・金額計算ツール｜まひろつーる</title><meta name="description" content="ボックス・流し・フォーメーションの点数と合計金額を、馬番を選ぶだけで計算する無料ツール。買い目の一覧も表示します。"><link rel="canonical" href="https://mahiro13th.github.io/tools/bakken-tensu/"><meta property="og:title" content="馬券の点数・金額計算ツール｜まひろつーる"><meta property="og:description" content="ボックス・流し・フォーメーションの点数と合計金額を、馬番を選ぶだけで計算する無料ツール。買い目の一覧も表示します。"><meta property="og:url" content="https://mahiro13th.github.io/tools/bakken-tensu/"><meta property="og:site_name" content="まひろつーる"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta property="og:image" content="https://mahiro13th.github.io/tools/img/bakken-tensu.jpg"><link rel="stylesheet" href="../style.css"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "馬券の点数・金額計算ツール", "description": "ボックス・流し・フォーメーションの点数と合計金額を、馬番を選ぶだけで計算する無料ツール。買い目の一覧も表示します。", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": "ja", "url": "https://mahiro13th.github.io/tools/bakken-tensu/", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"}}</script></head><body><header class="site"><div class="wrap"><a class="logo" href="../">まひろつーる</a><nav><a href="../#tools">ツール一覧</a><a href="../about/">運営者</a></nav></div></header><main class="wrap"><p class="crumb"><a href="../">ホーム</a> ＞ 競馬 ＞ 馬券の点数・金額計算</p><h1>馬券の点数・金額計算ツール</h1><p class="lead">券種と買い方を選び、馬番を押すだけで、点数と合計金額が出ます。買い目の一覧も同時に表示します。</p>
+<div id="kbc-root" class="kbc"></div>
+<style>
+.kbc{--a:#1f7a4d;--bg:#fff;--line:#d3dbd6;--sub:#5c6660;color:#1d2420;background:#f5f8f6;border:1px solid var(--line);border-radius:12px;padding:16px;max-width:640px;margin:1.5em auto;box-sizing:border-box;line-height:1.5;font-size:15px;text-align:left}
+.kbc *{box-sizing:border-box}
+.kbc-h{font-weight:700;font-size:1.15em;margin:0 0 12px}
+.kbc-sec{margin:0 0 14px}
+.kbc-lb{display:flex;align-items:center;gap:6px;font-size:.85em;color:var(--sub);margin:0 0 6px;font-weight:700}
+.kbc-lb span{margin-right:auto}
+.kbc-seg{display:flex;flex-wrap:wrap;gap:6px}
+.kbc button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:8px;padding:6px 10px;min-height:36px;margin:0;line-height:1.2;box-shadow:none}
+.kbc button.on{background:var(--a);border-color:var(--a);color:#fff}
+.kbc-num{display:grid;grid-template-columns:repeat(9,1fr);gap:5px}
+.kbc-num button{padding:6px 0;font-variant-numeric:tabular-nums}
+.kbc button.kbc-mini{font-size:.8em;padding:2px 8px;min-height:26px;font-weight:400}
+.kbc-res{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+.kbc-big{display:flex;gap:28px;flex-wrap:wrap}
+.kbc-big div{font-size:.85em;color:var(--sub)}
+.kbc-big b{display:block;font-size:1.7em;color:var(--a);font-variant-numeric:tabular-nums;line-height:1.2}
+.kbc-list{margin-top:10px;font-size:.9em;max-height:220px;overflow:auto;display:flex;flex-wrap:wrap;gap:4px 12px;font-variant-numeric:tabular-nums;border-top:1px solid var(--line);padding-top:8px}
+.kbc-err{color:#b3261e;font-size:.9em;margin-top:6px}
+.kbc-note{font-size:.8em;color:var(--sub);margin-top:6px}
+.kbc input,.kbc select{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:inherit}
+.kbc input{width:120px}
+.kbc-inl{display:flex;gap:16px;flex-wrap:wrap;align-items:end}
+.kbc label.kbc-chk{display:inline-flex;align-items:center;gap:6px;font-size:.9em;cursor:pointer}
+@media (max-width:420px){.kbc-num{grid-template-columns:repeat(6,1fr)}.kbc{padding:12px}}
+</style>
+<script>
+(function(){
+var root=document.getElementById('kbc-root');
+if(!root){return;}
+var TYPES=[
+{id:'tan',name:'単勝',k:1,ord:false},
+{id:'fuku',name:'複勝',k:1,ord:false},
+{id:'waku',name:'枠連',k:2,ord:false,waku:true},
+{id:'umaren',name:'馬連',k:2,ord:false},
+{id:'wide',name:'ワイド',k:2,ord:false},
+{id:'umatan',name:'馬単',k:2,ord:true},
+{id:'sanfuku',name:'3連複',k:3,ord:false},
+{id:'santan',name:'3連単',k:3,ord:true}
+];
+var MODES=[{id:'box',name:'ボックス'},{id:'nagashi',name:'流し'},{id:'form',name:'フォーメーション'}];
+var st={type:'umaren',mode:'box',n:18,unit:100,pos:0,multi:false,sel:[[],[],[]]};
+var resEl=null;
+function T(){for(var i=0;i<TYPES.length;i++){if(TYPES[i].id===st.type){return TYPES[i];}}return TYPES[0];}
+function h(tag,attrs,kids){var e=document.createElement(tag);if(attrs){for(var a in attrs){if(a==='text'){e.textContent=attrs[a];}else if(a==='cls'){e.className=attrs[a];}else if(a.indexOf('on')===0){e.addEventListener(a.slice(2),attrs[a]);}else{e.setAttribute(a,attrs[a]);}}}if(kids){for(var j=0;j<kids.length;j++){if(kids[j]){e.appendChild(kids[j]);}}}return e;}
+function num(a,b){return a-b;}
+function maxNum(){return T().waku?8:st.n;}
+function cap(w){var n=st.n;if(n<=8){return w<=n?1:0;}var base=Math.floor(n/8);var extra=n%8;return base+(w>8-extra?1:0);}
+function has(arr,x){return arr.indexOf(x)>=0;}
+function axisFixed(){var t=T();if(!t.ord){return false;}if(st.mode!=='nagashi'){return false;}if(t.k!==3){return false;}return st.sel[0].length===2;}
+function isMulti(){return st.multi||axisFixed();}
+function rowNames(){var t=T();if(t.k===1){return ['買う馬'];}if(st.mode==='box'){return [t.waku?'選ぶ枠':'選ぶ馬'];}if(st.mode==='nagashi'){return ['軸','相手'];}var r=[];for(var i=0;i<t.k;i++){r.push(t.ord?(i+1)+'着':(i+1)+(t.waku?'枠目':'頭目'));}return r;}
+function resetSel(){st.sel=[[],[],[]];st.pos=0;st.multi=false;}
+function toggle(row,x){var t=T();var s=st.sel[row];var i=s.indexOf(x);if(i>=0){s.splice(i,1);}else{s.push(x);if(st.mode==='nagashi'?!t.waku:false){var o=st.sel[1-row];var j=o.indexOf(x);if(j>=0){o.splice(j,1);}}}render();}
+function compute(){
+var t=T();var k=t.k;var N=maxNum();var S=st.sel;var mode=t.k===1?'single':st.mode;var res=[];var seen={};
+if(t.waku?st.n<9:false){return {list:[],err:'枠連は9頭立て以上のレースで発売されます。'};}
+if(mode==='single'){var a1=S[0].slice().sort(num);for(var q=0;q<a1.length;q++){res.push([a1[q]]);}return {list:res,err:''};}
+if(mode==='nagashi'){var na=S[0].length;if(na===0){return {list:[],err:''};}if(k===2?na!==1:false){return {list:[],err:'軸は1つだけ選んでください。'};}if(k===3?na>2:false){return {list:[],err:'軸は2頭までです。'};}}
+var multi=isMulti();var A=S[0];var P=S[1];var tp=[];
+function ok(){
+for(var i=0;i<k;i++){for(var j=0;j<i;j++){if(tp[i]===tp[j]){if(!t.waku){return false;}if(mode==='box'){return false;}if(cap(tp[i])<2){return false;}}}}
+if(mode==='form'){for(var f=0;f<k;f++){if(!has(S[f],tp[f])){return false;}}return true;}
+if(mode==='box'){for(var b=0;b<k;b++){if(!has(S[0],tp[b])){return false;}}return true;}
+if(t.ord?!multi:false){for(var p=0;p<k;p++){if(p===st.pos){if(tp[p]!==A[0]){return false;}}else if(!has(P,tp[p])){return false;}}return true;}
+var used=[];for(var x=0;x<A.length;x++){var found=-1;for(var y=0;y<k;y++){if(used[y]){continue;}if(tp[y]===A[x]){found=y;break;}}if(found<0){return false;}used[found]=true;}
+for(var z=0;z<k;z++){if(used[z]){continue;}if(!has(P,tp[z])){return false;}}return true;}
+function rec(d){if(d===k){if(ok()){var c=t.ord?tp.slice():tp.slice().sort(num);var key=c.join('-');if(!seen[key]){seen[key]=1;res.push(c);}}return;}for(var v=1;v<=N;v++){tp[d]=v;rec(d+1);}}
+rec(0);
+res.sort(function(a,b){for(var i=0;i<a.length;i++){if(a[i]!==b[i]){return a[i]-b[i];}}return 0;});
+return {list:res,err:''};}
+function fmtYen(v){return v.toLocaleString('ja-JP')+'円';}
+function renderResult(){
+if(!resEl){return;}
+resEl.textContent='';
+var t=T();var r=compute();var cnt=r.list.length;var unit=Math.max(0,Math.floor((st.unit||0)/100)*100);
+resEl.appendChild(h('div',{cls:'kbc-big'},[h('div',null,[document.createTextNode('点数'),h('b',{text:cnt+'点'})]),h('div',null,[document.createTextNode('合計金額（1点'+fmtYen(unit)+'）'),h('b',{text:fmtYen(cnt*unit)})])]));
+if(r.err){resEl.appendChild(h('div',{cls:'kbc-err',text:r.err}));}
+if(cnt>0){var sep=t.ord?'→':'-';var lim=300;var list=h('div',{cls:'kbc-list'});for(var i=0;i<Math.min(cnt,lim);i++){list.appendChild(h('span',{text:r.list[i].join(sep)}));}if(cnt>lim){list.appendChild(h('span',{text:'ほか'+(cnt-lim)+'点'}));}resEl.appendChild(list);}
+if(st.unit%100!==0){resEl.appendChild(h('div',{cls:'kbc-note',text:'金額は100円単位で計算しています。'}));}}
+function seg(items,cur,fn){var w=h('div',{cls:'kbc-seg'});for(var i=0;i<items.length;i++){(function(it){w.appendChild(h('button',{type:'button',cls:it.id===cur?'on':'',text:it.name,onclick:function(){fn(it.id);}}));})(items[i]);}return w;}
+function render(){
+var t=T();root.textContent='';
+root.appendChild(h('div',{cls:'kbc-h',text:'馬券 点数・金額計算'}));
+root.appendChild(h('div',{cls:'kbc-sec'},[h('div',{cls:'kbc-lb'},[h('span',{text:'券種'})]),seg(TYPES,st.type,function(id){st.type=id;if(T().k===2?st.pos>1:false){st.pos=0;}resetSel();render();})]));
+if(t.k>1){root.appendChild(h('div',{cls:'kbc-sec'},[h('div',{cls:'kbc-lb'},[h('span',{text:'買い方'})]),seg(MODES,st.mode,function(id){st.mode=id;resetSel();render();})]));}
+var sel=h('select',{onchange:function(e){st.n=parseInt(e.target.value,10);var m=maxNum();for(var r=0;r<3;r++){st.sel[r]=st.sel[r].filter(function(x){return x<=m;});}render();}});
+for(var n=5;n<=18;n++){var o=h('option',{value:String(n),text:n+'頭'});if(n===st.n){o.selected=true;}sel.appendChild(o);}
+var inp=h('input',{type:'number',min:'100',step:'100',value:String(st.unit),inputmode:'numeric',oninput:function(e){st.unit=parseInt(e.target.value,10)||0;renderResult();}});
+root.appendChild(h('div',{cls:'kbc-sec kbc-inl'},[h('div',null,[h('div',{cls:'kbc-lb'},[h('span',{text:'出走頭数'})]),sel]),h('div',null,[h('div',{cls:'kbc-lb'},[h('span',{text:'1点あたりの金額（円）'})]),inp])]));
+if(t.ord?st.mode==='nagashi':false){
+var opts=h('div',{cls:'kbc-sec'});
+var fixed=axisFixed();
+var cb=h('input',{type:'checkbox',onchange:function(e){st.multi=e.target.checked;render();}});cb.style.width='auto';cb.checked=isMulti();if(fixed){cb.disabled=true;}
+opts.appendChild(h('label',{cls:'kbc-chk'},[cb,document.createTextNode(fixed?'マルチ（3連単の軸2頭流しはマルチのみ計算できます）':'マルチ（軸の着順を問わない）')]));
+if(!isMulti()){var ps=[];for(var p=0;p<t.k;p++){ps.push({id:String(p),name:'軸を'+(p+1)+'着に固定'});}var pw=seg(ps,String(st.pos),function(id){st.pos=parseInt(id,10);render();});pw.style.marginTop='8px';opts.appendChild(pw);}
+root.appendChild(opts);}
+var names=rowNames();var N=maxNum();
+for(var r=0;r<names.length;r++){(function(row){
+var grid=h('div',{cls:'kbc-num'});
+for(var x=1;x<=N;x++){(function(v){var lab=t.waku?v+'枠':String(v);var b=h('button',{type:'button',cls:has(st.sel[row],v)?'on':'',text:lab,onclick:function(){toggle(row,v);}});if(t.waku?cap(v)>=2:false){b.title=cap(v)+'頭';}grid.appendChild(b);})(x);}
+var allBtn=(st.mode==='nagashi'?row===0:false)?null:h('button',{type:'button',cls:'kbc-mini',text:'全部',onclick:function(){var a=[];for(var i=1;i<=N;i++){if(st.mode==='nagashi'?(t.waku?false:has(st.sel[0],i)):false){continue;}a.push(i);}st.sel[row]=a;render();}});
+var clr=h('button',{type:'button',cls:'kbc-mini',text:'クリア',onclick:function(){st.sel[row]=[];render();}});
+root.appendChild(h('div',{cls:'kbc-sec'},[h('div',{cls:'kbc-lb'},[h('span',{text:names[row]+'（'+st.sel[row].length+'）'}),allBtn,clr]),grid]));
+})(r);}
+var hint='';
+if(t.k>1?st.mode==='nagashi':false){hint=t.k===3?'軸は1頭または2頭を選べます。':'軸を1つ選び、相手を選んでください。';}
+if(t.waku?st.mode!=='box':false){hint+='同じ枠に2頭以上いるときは、ゾロ目（例：8-8）も計算に含めます。';}
+if(t.waku?st.mode==='box':false){hint+='ボックスにはゾロ目は含まれません。';}
+if(hint){root.appendChild(h('div',{cls:'kbc-note',text:hint}));}
+resEl=h('div',{cls:'kbc-res'});root.appendChild(resEl);
+root.appendChild(h('div',{cls:'kbc-note',text:'※計算結果は目安です。実際の購入前に、投票画面の点数と金額をご確認ください。'}));
+renderResult();}
+render();
+})();
+</script>
+
+<h2>使い方</h2>
+<ol>
+<li>券種（単勝〜3連単の8種類）と、買い方（ボックス・流し・フォーメーション）を選ぶ</li>
+<li>出走頭数と、1点あたりの金額（100円単位）を入れる</li>
+<li>馬番を押す。点数・合計金額・買い目の一覧がその場で変わる</li>
+</ol>
+<h2>よくある質問</h2>
+<h3>3連単の軸1頭マルチは何点になりますか？</h3>
+<p>相手が6頭なら90点です。同じ相手で3連複の軸1頭流しにすると15点なので、6倍の差があります。</p>
+<h3>5頭ボックスは何点ですか？</h3>
+<p>馬連・ワイドは10点、馬単は20点、3連複は10点、3連単は60点です。</p>
+<a class="more" href="https://kuromemo.blog.jp/archives/40964688.html">くろめも：点数計算ツールの詳しい解説 →<small>計算の考え方や、くわしい例はブログで紹介しています</small></a><section class="related"><h2>ほかのツール</h2><ul><li><a href="../gousei-odds/">合成オッズ・トリガミ判定</a>（競馬）</li><li><a href="../gacha-kakuritsu/">ガチャ確率計算</a>（ゲーム）</li><li><a href="../kickoff-jst/">キックオフ時刻 日本時間変換</a>（サッカー観戦）</li></ul></section></main><footer class="site"><div class="wrap"><a href="../">ホーム</a><a href="../about/">運営者情報</a><a href="../privacy/">プライバシーポリシー</a><p>計算結果は目安です。実際の払戻・排出率・試合日時は、公式の情報で確かめてください。</p><p>© 2026 まひろつーる</p></div></footer></body></html>

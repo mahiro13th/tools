@@ -1,0 +1,102 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>キックオフ時刻 日本時間変換ツール｜まひろつーる</title><meta name="description" content="海外サッカーの現地キックオフ時刻を、曜日付きの日本時間に変換する無料ツール。ヨーロッパやアメリカのサマータイムも自動で計算します。"><link rel="canonical" href="https://mahiro13th.github.io/tools/kickoff-jst/"><meta property="og:title" content="キックオフ時刻 日本時間変換ツール｜まひろつーる"><meta property="og:description" content="海外サッカーの現地キックオフ時刻を、曜日付きの日本時間に変換する無料ツール。ヨーロッパやアメリカのサマータイムも自動で計算します。"><meta property="og:url" content="https://mahiro13th.github.io/tools/kickoff-jst/"><meta property="og:site_name" content="まひろつーる"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta property="og:image" content="https://mahiro13th.github.io/tools/img/kickoff-jst.jpg"><link rel="stylesheet" href="../style.css"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "キックオフ時刻 日本時間変換ツール", "description": "海外サッカーの現地キックオフ時刻を、曜日付きの日本時間に変換する無料ツール。ヨーロッパやアメリカのサマータイムも自動で計算します。", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": "ja", "url": "https://mahiro13th.github.io/tools/kickoff-jst/", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"}}</script></head><body><header class="site"><div class="wrap"><a class="logo" href="../">まひろつーる</a><nav><a href="../#tools">ツール一覧</a><a href="../about/">運営者</a></nav></div></header><main class="wrap"><p class="crumb"><a href="../">ホーム</a> ＞ サッカー観戦 ＞ キックオフ時刻 日本時間変換</p><h1>キックオフ時刻 日本時間変換ツール</h1><p class="lead">国を選んで現地のキックオフ日時を入れると、日本時間が曜日付きで出ます。日本時間から現地時刻への逆向きの変換もできます。</p>
+<div id="kjt-root" class="kjt"></div>
+<style>
+.kjt{--a:#1d4ed8;--bg:#fff;--line:#d5dbe5;--sub:#5b6472;color:#1c2430 !important;background:#f5f7fb !important;border:1px solid var(--line);border-radius:12px;padding:16px;max-width:640px;margin:1.5em auto;box-sizing:border-box;line-height:1.5;font-size:15px;text-align:left}
+.kjt *{box-sizing:border-box}
+.kjt-h{font-weight:700;font-size:1.15em;margin:0 0 12px}
+.kjt-sec{margin:0 0 14px}
+.kjt-lb{font-size:.85em;color:var(--sub);margin:0 0 6px;font-weight:700}
+.kjt-seg{display:flex;flex-wrap:wrap;gap:6px}
+.kjt button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:8px;padding:6px 12px;min-height:36px;margin:0;line-height:1.2;box-shadow:none}
+.kjt button.on{background:var(--a);border-color:var(--a);color:#fff}
+.kjt select,.kjt input{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#1c2430;max-width:100%}
+.kjt-inl{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
+.kjt-res{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+.kjt-big{font-size:1.5em;font-weight:700;color:var(--a);line-height:1.3;font-variant-numeric:tabular-nums}
+.kjt-sub{font-size:.9em;color:var(--sub);margin-top:4px}
+.kjt-err{color:#b3261e;font-size:.9em;margin-top:6px}
+.kjt-note{font-size:.8em;color:var(--sub);margin-top:6px}
+@media (max-width:420px){.kjt{padding:12px}.kjt-big{font-size:1.3em}}
+</style>
+<script>
+(function(){
+var root=document.getElementById('kjt-root');
+if(!root){return;}
+var ZONES=[
+{id:'Europe/London',name:'イングランド・スコットランド（ウィガンなど）'},
+{id:'Europe/Madrid',name:'スペイン（バレンシアなど）'},
+{id:'Europe/Amsterdam',name:'オランダ（アヤックスなど）'},
+{id:'Europe/Berlin',name:'ドイツ（ブレーメンなど）'},
+{id:'Europe/Paris',name:'フランス（バランシエンヌなど）'},
+{id:'Europe/Rome',name:'イタリア（ペスカーラなど）'},
+{id:'Europe/Brussels',name:'ベルギー'},
+{id:'Europe/Lisbon',name:'ポルトガル'},
+{id:'Europe/Vienna',name:'オーストリア'},
+{id:'Europe/Zurich',name:'スイス'},
+{id:'Europe/Copenhagen',name:'デンマーク'},
+{id:'Europe/Istanbul',name:'トルコ'},
+{id:'America/New_York',name:'アメリカ東部'},
+{id:'America/Los_Angeles',name:'アメリカ西部'},
+{id:'Asia/Riyadh',name:'サウジアラビア'},
+{id:'Australia/Sydney',name:'オーストラリア（シドニー）'}
+];
+var WD=['日','月','火','水','木','金','土'];
+var now=new Date();
+function pad(n){return (n<10?'0':'')+n;}
+var st={dir:'toJst',zone:'Europe/Madrid',date:now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate()),time:'20:00'};
+var resEl=null;
+function h(tag,attrs,kids){var e=document.createElement(tag);if(attrs){for(var a in attrs){if(a==='text'){e.textContent=attrs[a];}else if(a==='cls'){e.className=attrs[a];}else if(a.indexOf('on')===0){e.addEventListener(a.slice(2),attrs[a]);}else{e.setAttribute(a,attrs[a]);}}}if(kids){for(var j=0;j<kids.length;j++){if(kids[j]){e.appendChild(kids[j]);}}}return e;}
+function zoneName(id){for(var i=0;i<ZONES.length;i++){if(ZONES[i].id===id){return ZONES[i].name;}}return id;}
+function parts(ms,tz){var f=new Intl.DateTimeFormat('en-US',{timeZone:tz,hourCycle:'h23',year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric',second:'numeric'});var p={};var a=f.formatToParts(new Date(ms));for(var i=0;i<a.length;i++){p[a[i].type]=a[i].value;}var hr=Number(p.hour);if(hr===24){hr=0;}return {y:Number(p.year),m:Number(p.month),d:Number(p.day),h:hr,mi:Number(p.minute),s:Number(p.second)};}
+function offset(ms,tz){var p=parts(ms,tz);return Date.UTC(p.y,p.m-1,p.d,p.h,p.mi,p.s)-Math.floor(ms/1000)*1000;}
+function wallToUtc(y,m,d,hh,mm,tz){var guess=Date.UTC(y,m-1,d,hh,mm);var u=guess-offset(guess,tz);u=guess-offset(u,tz);var p=parts(u,tz);var ok=p.y===y?(p.m===m?(p.d===d?(p.h===hh?p.mi===mm:false):false):false):false;return {ms:u,ok:ok};}
+function fmt(ms,tz){var p=parts(ms,tz);var wd=new Date(Date.UTC(p.y,p.m-1,p.d)).getUTCDay();return p.y+'年'+p.m+'月'+p.d+'日（'+WD[wd]+'） '+pad(p.h)+':'+pad(p.mi);}
+function diffText(ms,tz){var o=(offset(ms,'Asia/Tokyo')-offset(ms,tz))/3600000;var r=Math.round(o*100)/100;if(r===0){return '時差なし';}return '日本は'+(r>0?r+'時間進んでいます':(-r)+'時間遅れています');}
+function isDst(ms,tz){var y=parts(ms,tz).y;var jan=offset(Date.UTC(y,0,15),tz);var jul=offset(Date.UTC(y,6,15),tz);if(jan===jul){return false;}return offset(ms,tz)===Math.max(jan,jul);}
+function renderResult(){
+if(!resEl){return;}resEl.textContent='';
+var dm=/^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(st.date);var tm=/^(\d{1,2}):(\d{2})$/.exec(st.time);
+if(!dm){resEl.appendChild(h('div',{cls:'kjt-err',text:'日付を選んでください。'}));return;}
+if(!tm){resEl.appendChild(h('div',{cls:'kjt-err',text:'時刻を入れてください。'}));return;}
+var src=st.dir==='toJst'?st.zone:'Asia/Tokyo';var dst=st.dir==='toJst'?'Asia/Tokyo':st.zone;
+var r=wallToUtc(Number(dm[1]),Number(dm[2]),Number(dm[3]),Number(tm[1]),Number(tm[2]),src);
+var srcLabel=st.dir==='toJst'?'現地（'+zoneName(st.zone)+'）':'日本時間';
+var dstLabel=st.dir==='toJst'?'日本時間':'現地（'+zoneName(st.zone)+'）';
+resEl.appendChild(h('div',{cls:'kjt-sub',text:srcLabel+'　'+fmt(r.ms,src)}));
+resEl.appendChild(h('div',{cls:'kjt-sub',text:dstLabel+'は'}));
+resEl.appendChild(h('div',{cls:'kjt-big',text:fmt(r.ms,dst)}));
+var dstOn=isDst(r.ms,st.zone);
+resEl.appendChild(h('div',{cls:'kjt-sub',text:diffText(r.ms,st.zone)+(dstOn?'（現地はサマータイム中）':'')}));
+if(!r.ok){resEl.appendChild(h('div',{cls:'kjt-err',text:'入力した時刻は、サマータイムの切り替えで存在しないか、2回ある時刻です。結果を確かめてください。'}));}}
+function render(){
+root.textContent='';
+root.appendChild(h('div',{cls:'kjt-h',text:'キックオフ時刻 日本時間変換'}));
+var dirs=[{id:'toJst',name:'現地 → 日本時間'},{id:'toLocal',name:'日本時間 → 現地'}];
+var seg=h('div',{cls:'kjt-seg'});for(var i=0;i<dirs.length;i++){(function(d){seg.appendChild(h('button',{type:'button',cls:d.id===st.dir?'on':'',text:d.name,onclick:function(){st.dir=d.id;render();}}));})(dirs[i]);}
+root.appendChild(h('div',{cls:'kjt-sec'},[h('div',{cls:'kjt-lb',text:'変換の向き'}),seg]));
+var sel=h('select',{'aria-label':'国・地域',onchange:function(e){st.zone=e.target.value;renderResult();}});
+for(var z=0;z<ZONES.length;z++){var o=h('option',{value:ZONES[z].id,text:ZONES[z].name});if(ZONES[z].id===st.zone){o.selected=true;}sel.appendChild(o);}
+root.appendChild(h('div',{cls:'kjt-sec'},[h('div',{cls:'kjt-lb',text:'国・地域'}),sel]));
+var di=h('input',{type:'date',value:st.date,'aria-label':'日付',oninput:function(e){st.date=e.target.value;renderResult();}});
+var ti=h('input',{type:'time',value:st.time,step:'300','aria-label':'時刻',oninput:function(e){st.time=e.target.value;renderResult();}});
+var lab=st.dir==='toJst'?'現地の':'日本時間の';
+root.appendChild(h('div',{cls:'kjt-sec kjt-inl'},[h('div',null,[h('div',{cls:'kjt-lb',text:lab+'日付'}),di]),h('div',null,[h('div',{cls:'kjt-lb',text:lab+'時刻'}),ti])]));
+resEl=h('div',{cls:'kjt-res'});root.appendChild(resEl);
+root.appendChild(h('div',{cls:'kjt-note',text:'※時差とサマータイムは、お使いの端末のタイムゾーン情報で計算しています。試合の日時は公式発表で確かめてください。'}));
+renderResult();}
+render();
+})();
+</script>
+
+<h2>使い方</h2>
+<ol>
+<li>国（リーグ）を選ぶ</li>
+<li>現地の日付と時刻を入れる</li>
+<li>日本時間が曜日付きで出る。サマータイムも自動で計算に入る</li>
+</ol>
+<h2>よくある質問</h2>
+<h3>サマータイムは自分で切り替える必要がありますか？</h3>
+<p>いりません。お使いの端末のタイムゾーン情報で自動計算します。</p>
+<h3>変換の例を教えてください</h3>
+<p>スペインの11月28日21:00は、日本時間の11月29日（日）5:00です。ドイツの8月22日15:30（サマータイム中）は、日本時間の8月22日22:30です。</p>
+<a class="more" href="https://mahiro13th.com/">推しクラブプレス：海外組の最新ニュース →<small>計算の考え方や、くわしい例はブログで紹介しています</small></a><section class="related"><h2>ほかのツール</h2><ul><li><a href="../bakken-tensu/">馬券の点数・金額計算</a>（競馬）</li><li><a href="../gousei-odds/">合成オッズ・トリガミ判定</a>（競馬）</li><li><a href="../gacha-kakuritsu/">ガチャ確率計算</a>（ゲーム）</li></ul></section></main><footer class="site"><div class="wrap"><a href="../">ホーム</a><a href="../about/">運営者情報</a><a href="../privacy/">プライバシーポリシー</a><p>計算結果は目安です。実際の払戻・排出率・試合日時は、公式の情報で確かめてください。</p><p>© 2026 まひろつーる</p></div></footer></body></html>

@@ -1,0 +1,108 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>合成オッズ・トリガミ判定ツール｜まひろつーる</title><meta name="description" content="買い目ごとのオッズから合成オッズを計算し、トリガミになるかを判定する無料ツール。予算から払戻がそろう配分も出せます。"><link rel="canonical" href="https://mahiro13th.github.io/tools/gousei-odds/"><meta property="og:title" content="合成オッズ・トリガミ判定ツール｜まひろつーる"><meta property="og:description" content="買い目ごとのオッズから合成オッズを計算し、トリガミになるかを判定する無料ツール。予算から払戻がそろう配分も出せます。"><meta property="og:url" content="https://mahiro13th.github.io/tools/gousei-odds/"><meta property="og:site_name" content="まひろつーる"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta property="og:image" content="https://mahiro13th.github.io/tools/img/gousei-odds.jpg"><link rel="stylesheet" href="../style.css"><link rel="icon" href="../favicon.svg" type="image/svg+xml"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "合成オッズ・トリガミ判定ツール", "description": "買い目ごとのオッズから合成オッズを計算し、トリガミになるかを判定する無料ツール。予算から払戻がそろう配分も出せます。", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "inLanguage": "ja", "url": "https://mahiro13th.github.io/tools/gousei-odds/", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"}}</script></head><body><header class="site"><div class="wrap"><a class="logo" href="../">まひろつーる</a><nav><a href="../#tools">ツール一覧</a><a href="../about/">運営者</a></nav></div></header><main class="wrap"><p class="crumb"><a href="../">ホーム</a> ＞ 競馬 ＞ 合成オッズ・トリガミ判定</p><h1>合成オッズ・トリガミ判定ツール</h1><p class="lead">買い目ごとのオッズを入れると、まとめて何倍の勝負になるか（合成オッズ）と、当たっても損をする「トリガミ」かどうかが分かります。</p>
+<div id="kgo-root" class="kgo"></div>
+<style>
+.kgo{--a:#1f7a4d;--bg:#fff;--line:#d3dbd6;--sub:#5c6660;--bad:#b3261e;--good:#1f7a4d;--even:#8a5a00;color:#1d2420 !important;background:#f5f8f6 !important;border:1px solid var(--line);border-radius:12px;padding:16px;max-width:640px;margin:1.5em auto;box-sizing:border-box;line-height:1.5;font-size:15px;text-align:left}
+.kgo *{box-sizing:border-box}
+.kgo-h{font-weight:700;font-size:1.15em;margin:0 0 12px}
+.kgo-sec{margin:0 0 14px}
+.kgo-lb{font-size:.85em;color:var(--sub);margin:0 0 6px;font-weight:700}
+.kgo button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:8px;padding:6px 12px;min-height:36px;margin:0;line-height:1.2;box-shadow:none}
+.kgo button.kgo-pri{background:var(--a);border-color:var(--a);color:#fff}
+.kgo input{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#1d2420;width:100%;min-width:0}
+.kgo-rows{display:grid;grid-template-columns:1.4fr 1fr 1.2fr 36px;gap:6px;align-items:center}
+.kgo-rows .kgo-hd{font-size:.8em;color:var(--sub);font-weight:700}
+.kgo-rows button{padding:0;min-height:36px}
+.kgo-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-top:10px}
+.kgo-bar .kgo-bud{width:140px}
+.kgo-res{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+.kgo-big{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:8px}
+.kgo-big div{font-size:.85em;color:var(--sub)}
+.kgo-big b{display:block;font-size:1.5em;color:var(--a);font-variant-numeric:tabular-nums;line-height:1.2}
+.kgo-tw{overflow-x:auto;margin-top:6px}
+.kgo table{border-collapse:collapse;width:100%;min-width:460px;font-size:.9em;font-variant-numeric:tabular-nums;background:#fff !important;color:#1d2420 !important}
+.kgo th,.kgo td{border:1px solid var(--line);padding:6px 8px;text-align:right;white-space:nowrap;background:#fff !important;color:#1d2420 !important}
+.kgo th{background:#eef3f0 !important;text-align:center}
+.kgo td.kgo-l{text-align:left}
+.kgo .kgo-bad{color:var(--bad) !important;font-weight:700}
+.kgo .kgo-good{color:var(--good) !important;font-weight:700}
+.kgo .kgo-even{color:var(--even) !important;font-weight:700}
+.kgo-err{color:var(--bad);font-size:.9em;margin-top:6px}
+.kgo-note{font-size:.8em;color:var(--sub);margin-top:6px}
+@media (max-width:420px){.kgo{padding:12px}.kgo-rows{grid-template-columns:1.2fr 1fr 1.1fr 32px}}
+</style>
+<script>
+(function(){
+var root=document.getElementById('kgo-root');
+if(!root){return;}
+var rows=[{name:'',odds:'',amt:''},{name:'',odds:'',amt:''},{name:'',odds:'',amt:''}];
+var budget='';
+var resEl=null;
+function h(tag,attrs,kids){var e=document.createElement(tag);if(attrs){for(var a in attrs){if(a==='text'){e.textContent=attrs[a];}else if(a==='cls'){e.className=attrs[a];}else if(a.indexOf('on')===0){e.addEventListener(a.slice(2),attrs[a]);}else{e.setAttribute(a,attrs[a]);}}}if(kids){for(var j=0;j<kids.length;j++){if(kids[j]){e.appendChild(kids[j]);}}}return e;}
+function yen(v){return Math.round(v).toLocaleString('ja-JP')+'円';}
+function num(s){var t=String(s).replace(/[０-９．]/g,function(c){return c==='．'?'.':String.fromCharCode(c.charCodeAt(0)-65248);}).replace(/,/g,'').trim();if(t===''){return NaN;}return Number(t);}
+function label(i){var n=rows[i].name.trim();return n===''?'買い目'+(i+1):n;}
+function valid(){var out=[];for(var i=0;i<rows.length;i++){var o=num(rows[i].odds);if(isNaN(o)){continue;}if(o<1){continue;}var m=num(rows[i].amt);out.push({i:i,odds:o,amt:isNaN(m)?0:Math.max(0,Math.floor(m/100)*100)});}return out;}
+function allocate(){
+var v=[];for(var i=0;i<rows.length;i++){var o=num(rows[i].odds);if(isNaN(o)){continue;}if(o<1){continue;}v.push({i:i,odds:o,amt:0});}
+var b=num(budget);var err='';
+if(v.length===0){err='オッズを入力してください。';}
+else if(isNaN(b)){err='予算を入力してください。';}
+else{var units=Math.floor(b/100);if(units<v.length){err='予算が足りません。買い目1つにつき100円以上が必要です。';}else{for(var u=0;u<units;u++){var k=0;for(var j=1;j<v.length;j++){if(v[j].odds*v[j].amt<v[k].odds*v[k].amt){k=j;}else if(v[j].odds*v[j].amt===v[k].odds*v[k].amt){if(v[j].odds<v[k].odds){k=j;}}}v[k].amt+=100;}for(var q=0;q<v.length;q++){rows[v[q].i].amt=String(v[q].amt);}}}
+render(err);}
+function compute(){
+var v=valid();if(v.length===0){return null;}
+var inv=0;for(var i=0;i<v.length;i++){inv+=1/v[i].odds;}
+var total=0;for(var j=0;j<v.length;j++){total+=v[j].amt;}
+var minPay=-1;var list=[];
+for(var k=0;k<v.length;k++){var pay=Math.floor(v[k].odds*v[k].amt/10+1e-9)*10;if(v[k].amt>0){minPay=minPay<0?pay:Math.min(minPay,pay);}list.push({i:v[k].i,odds:v[k].odds,amt:v[k].amt,pay:pay,net:pay-total});}
+return {g:1/inv,total:total,minPay:minPay,list:list,cnt:v.length};}
+function renderResult(msg){
+if(!resEl){return;}resEl.textContent='';
+var r=compute();
+if(!r){resEl.appendChild(h('div',{cls:'kgo-note',text:'オッズを入れると、合成オッズを計算します。'}));if(msg){resEl.appendChild(h('div',{cls:'kgo-err',text:msg}));}return;}
+var gTxt=(Math.floor(r.g*100)/100).toFixed(2)+'倍';
+var rate=r.total>0?(r.minPay<0?'-':Math.floor(r.minPay/r.total*1000)/10+'%'):'-';
+resEl.appendChild(h('div',{cls:'kgo-big'},[h('div',null,[document.createTextNode('合成オッズ'),h('b',{text:gTxt})]),h('div',null,[document.createTextNode('合計金額'),h('b',{text:yen(r.total)})]),h('div',null,[document.createTextNode('最低回収率'),h('b',{text:rate})])]));
+if(r.g<1.0001){resEl.appendChild(h('div',{cls:'kgo-err',text:'合成オッズが1倍以下です。どの買い目が当たっても、賭けた金額より増えません。'}));}
+if(r.total>0){
+var tb=h('tbody');var tri=0;
+for(var i=0;i<r.list.length;i++){var x=r.list[i];var cls,txt;if(x.amt===0){cls='';txt='金額なし';}else if(x.net<0){cls='kgo-bad';txt='トリガミ';tri++;}else if(x.net===0){cls='kgo-even';txt='元返し';}else{cls='kgo-good';txt='プラス';}
+tb.appendChild(h('tr',null,[h('td',{cls:'kgo-l',text:label(x.i)}),h('td',{text:x.odds.toFixed(1)+'倍'}),h('td',{text:yen(x.amt)}),h('td',{text:yen(x.pay)}),h('td',{cls:cls,text:(x.net>0?'+':'')+x.net.toLocaleString('ja-JP')+'円'}),h('td',{cls:cls,text:txt})]));}
+var th=h('tr');var heads=['買い目','オッズ','金額','払戻','収支','判定'];for(var t=0;t<heads.length;t++){th.appendChild(h('th',{text:heads[t]}));}
+resEl.appendChild(h('div',{cls:'kgo-tw'},[h('table',null,[h('thead',null,[th]),tb])]));
+if(tri>0){resEl.appendChild(h('div',{cls:'kgo-note',text:'トリガミ：当たっても払戻が合計金額を下回る買い目です（'+tri+'件）。'}));}
+}else{resEl.appendChild(h('div',{cls:'kgo-note',text:'金額を入れるか、予算から配分すると、買い目ごとの払戻と収支を表示します。'}));}
+if(msg){resEl.appendChild(h('div',{cls:'kgo-err',text:msg}));}}
+function inputCell(i,key,ph,mode){return h('input',{type:'text',inputmode:mode,placeholder:ph,value:rows[i][key],'aria-label':label(i)+'の'+ph,oninput:function(e){rows[i][key]=e.target.value;renderResult('');}});}
+function render(msg){
+root.textContent='';
+root.appendChild(h('div',{cls:'kgo-h',text:'合成オッズ・トリガミ判定'}));
+var g=h('div',{cls:'kgo-rows'},[h('div',{cls:'kgo-hd',text:'買い目（任意）'}),h('div',{cls:'kgo-hd',text:'オッズ'}),h('div',{cls:'kgo-hd',text:'金額（円）'}),h('div')]);
+for(var i=0;i<rows.length;i++){(function(i){
+g.appendChild(inputCell(i,'name','例 3-7','text'));
+g.appendChild(inputCell(i,'odds','例 5.2','decimal'));
+g.appendChild(inputCell(i,'amt','例 300','numeric'));
+g.appendChild(h('button',{type:'button',text:'×','aria-label':label(i)+'を削除',onclick:function(){if(rows.length>1){rows.splice(i,1);}else{rows[0]={name:'',odds:'',amt:''};}render('');}}));})(i);}
+root.appendChild(h('div',{cls:'kgo-sec'},[g]));
+var bud=h('input',{type:'text',inputmode:'numeric',placeholder:'例 3000',value:budget,cls:'kgo-bud','aria-label':'予算',oninput:function(e){budget=e.target.value;}});
+root.appendChild(h('div',{cls:'kgo-bar'},[h('button',{type:'button',text:'＋ 買い目を追加',onclick:function(){if(rows.length<30){rows.push({name:'',odds:'',amt:''});}render('');}}),h('div',null,[h('div',{cls:'kgo-lb',text:'予算（円）'}),bud]),h('button',{type:'button',cls:'kgo-pri',text:'払戻がそろうように配分',onclick:allocate}),h('button',{type:'button',text:'すべてクリア',onclick:function(){rows=[{name:'',odds:'',amt:''},{name:'',odds:'',amt:''},{name:'',odds:'',amt:''}];budget='';render('');}})]));
+resEl=h('div',{cls:'kgo-res'});root.appendChild(h('div',{cls:'kgo-sec'},[resEl]));
+root.appendChild(h('div',{cls:'kgo-note',text:'※オッズは締め切りまで変わります。計算結果は目安です。払戻は100円あたりの払戻金から10円未満を切り捨てて計算しています。'}));
+renderResult(msg);}
+render('');
+})();
+</script>
+
+<h2>使い方</h2>
+<ol>
+<li>買い目ごとのオッズを入れる。合成オッズがすぐに出る</li>
+<li>買い目ごとの金額を入れると、当たったときの払戻・収支・トリガミの判定が出る</li>
+<li>予算を入れて「払戻がそろうように配分」を押すと、100円単位で金額を割り振る</li>
+</ol>
+<p>買い目は30点まで増やせます。</p>
+<h2>よくある質問</h2>
+<h3>合成オッズはどう計算していますか？</h3>
+<p>「1 ÷（1/オッズ1 ＋ 1/オッズ2 ＋ …）」です。オッズ3.5倍・5.0倍・12.0倍の3点なら1.75倍になります。</p>
+<h3>合成オッズが1倍を下回るとどうなりますか？</h3>
+<p>どの買い目が当たっても、賭けた合計より払戻が少なくなります。点数を絞るか、買い目を見直す目安にしてください。</p>
+<a class="more" href="https://kuromemo.blog.jp/archives/40965606.html">くろめも：合成オッズの考え方と計算例 →<small>計算の考え方や、くわしい例はブログで紹介しています</small></a><section class="related"><h2>ほかのツール</h2><ul><li><a href="../bakken-tensu/">馬券の点数・金額計算</a>（競馬）</li><li><a href="../gacha-kakuritsu/">ガチャ確率計算</a>（ゲーム）</li><li><a href="../kickoff-jst/">キックオフ時刻 日本時間変換</a>（サッカー観戦）</li></ul></section></main><footer class="site"><div class="wrap"><a href="../">ホーム</a><a href="../about/">運営者情報</a><a href="../privacy/">プライバシーポリシー</a><p>計算結果は目安です。実際の払戻・排出率・試合日時は、公式の情報で確かめてください。</p><p>© 2026 まひろつーる</p></div></footer></body></html>
